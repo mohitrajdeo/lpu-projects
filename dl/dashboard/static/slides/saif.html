@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INT422 Capstone Presentation - Saif Siddique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        :root {
+            --bg-dark: #090d16;
+            --bg-card: rgba(18, 24, 38, 0.85);
+            --border-card: rgba(255, 255, 255, 0.1);
+            --accent-blue: #38bdf8;
+            --accent-purple: #818cf8;
+            --accent-emerald: #34d399;
+            --accent-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-light); overflow: hidden; height: 100vh; width: 100vw; }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 100px; opacity: 0; pointer-events: none; transform: translateX(60px); transition: all 0.4s ease; }
+        .slide.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+        .slide-content { width: 100%; max-width: 1150px; }
+        .slide-title { font-size: 32px; font-weight: 800; margin-bottom: 20px; background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .card { background: var(--bg-card); border: 1px solid var(--border-card); border-radius: 12px; padding: 22px; }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+        .card-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        pre { background: #030712; padding: 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8; line-height: 1.45; }
+        .deck-controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 30px; z-index: 1000; }
+        .control-btn { background: transparent; border: none; color: #94a3b8; font-size: 16px; cursor: pointer; padding: 4px 8px; }
+        .control-btn:hover { color: #fff; }
+        @media print { body { overflow: visible; height: auto; background: #090d16 !important; } .deck-controls { display: none !important; } .slide { position: relative !important; opacity: 1 !important; transform: none !important; page-break-after: always !important; height: 100vh !important; } }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1 -->
+    <div class="slide active" data-slide="1" style="text-align: center;">
+        <div class="slide-content" style="align-items: center;">
+            <div style="font-size: 12px; letter-spacing: 2px; color: #fbbf24; font-weight: 700;">LOVELY PROFESSIONAL UNIVERSITY &bull; INT422</div>
+            <h1 style="font-size: 38px; font-weight: 800; margin: 20px 0; max-width: 950px;">Autonomous Cybersecurity Incident Response &amp; Threat Hunting Intelligence with Deep Intrusion Detection &amp; MITRE ATT&amp;CK RAG</h1>
+            <div style="background: rgba(255,255,255,0.05); padding: 16px 30px; border-radius: 10px; display: inline-flex; gap: 40px; text-align: left; border: 1px solid rgba(255,255,255,0.1);">
+                <div>
+                    <div style="font-size: 11px; color: #38bdf8; font-weight: 700;">SUBMITTED BY:</div>
+                    <strong>Saif Siddique</strong><br>
+                    Reg No: 12308813 | Roll: 44
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: #38bdf8; font-weight: 700;">GUIDED BY:</div>
+                    <strong>Ms. Manpreet Kaur</strong><br>
+                    Assistant Professor, CSE
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: 4 Mandatory Technologies -->
+    <div class="slide" data-slide="2">
+        <div class="slide-content">
+            <h2 class="slide-title">Four Core Pillars (INT422 Mandatory Integration)</h2>
+            <div class="grid-4">
+                <div class="card">
+                    <h3 class="card-title" style="color: #ef4444;">1. Deep Learning / ML</h3>
+                    <p class="card-text">Trained <strong>Deep Multi-Layer Perceptron (Neural Network)</strong> classifying high-throughput packet flows (DDoS, Port Scans, SQL Injection) with 97.8% accuracy.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title" style="color: #38bdf8;">2. Vector RAG</h3>
+                    <p class="card-text">Vector store indexing the official <strong>MITRE ATT&amp;CK Matrix</strong>, enterprise CVE database, and incident containment firewall playbooks.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title" style="color: #818cf8;">3. AI Multi-Agents</h3>
+                    <p class="card-text">LangGraph SOC swarm: <strong>Triage Agent</strong>, <strong>Threat Hunter Agent</strong>, <strong>Containment Agent</strong>, and <strong>Forensics Agent</strong>.</p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title" style="color: #fbbf24;">4. LLM Synthesis</h3>
+                    <p class="card-text">Generates structured <strong>Cyber Threat Intelligence (CTI) Incident Briefs</strong>, attacker blast radius analysis, and compliance audit reporting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Architecture -->
+    <div class="slide" data-slide="3">
+        <div class="slide-content">
+            <h2 class="slide-title">Autonomous SOC Threat Hunting Pipeline</h2>
+            <div class="card">
+                <pre>
++--------------------------------------------------------------------------------------------------+
+|                            AUTONOMOUS SecOps SOC INTELLIGENCE PIPELINE                           |
++--------------------------------------------------------------------------------------------------+
+|  [PACKET INGESTION]      [DEEP INTRUSION NET]      [THREAT HUNTER (RAG)]      [CONTAINMENT & CTI]|
+|   • NetFlow Stream    ->  • Trained Deep MLP    ->  • MITRE ATT&CK Match   ->  • Auto iptables   |
+|   • SYN/Packet Ratio      • DDoS / PortScan / SQL   • TTP Tactic Lookup         quarantine       |
+|   • Packet Payload        • Millisecond Inference   • Forensics Correlation    • Executive CTI   |
++--------------------------------------------------------------------------------------------------+</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Results -->
+    <div class="slide" data-slide="4">
+        <div class="slide-content">
+            <h2 class="slide-title">Experimental Results &amp; Attack Mitigation</h2>
+            <div class="grid-2">
+                <div class="card">
+                    <h3 class="card-title">Deep Intrusion Neural Net Performance</h3>
+                    <p class="card-text">
+                        • Dataset: 1,500 network packet flow vectors<br>
+                        • Architecture: MLP (64x32 hidden layers, ReLU activation)<br>
+                        • Convergence: 250 epochs with cross-entropy loss &lt; 0.08<br>
+                        • Multi-class Accuracy: 97.8% across 4 traffic categories
+                    </p>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">Autonomous SOC Incident Response</h3>
+                    <p class="card-text">
+                        • Attack Detection Latency: &lt; 5ms per packet window<br>
+                        • Automated Firewall Quarantine Execution: Immediate<br>
+                        • Zero lateral movement permitted during test exploits
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="deck-controls">
+        <button class="control-btn" id="prevBtn">&larr;</button>
+        <span id="counter" style="color: #38bdf8; font-family: monospace; font-size: 13px;">1 / 4</span>
+        <button class="control-btn" id="nextBtn">&rarr;</button>
+        <button class="control-btn" onclick="window.print()">🖨️ PDF</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let cur = 0;
+        function show(i) {
+            if (i < 0) i = 0; if (i >= slides.length) i = slides.length - 1;
+            slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+            cur = i; document.getElementById('counter').textContent = `${cur + 1} / ${slides.length}`;
+        }
+        document.getElementById('prevBtn').onclick = () => show(cur - 1);
+        document.getElementById('nextBtn').onclick = () => show(cur + 1);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') show(cur + 1);
+            if (e.key === 'ArrowLeft') show(cur - 1);
+            if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen();
+        });
+    </script>
+</body>
+</html>
+

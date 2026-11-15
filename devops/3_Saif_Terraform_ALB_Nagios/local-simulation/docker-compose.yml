@@ -1,0 +1,62 @@
+services:
+  # 1. High-Availability Application Load Balancer (ALB)
+  alb:
+    image: nginx:alpine
+    container_name: saif_alb
+    ports:
+      - "8083:80"
+    volumes:
+      - ./nginx-alb.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - secops-worker-1
+      - secops-worker-2
+    restart: unless-stopped
+    networks:
+      - saif_secops_net
+
+  # 2. SecOps Threat Hunter Node 1 (Primary AI Microservice)
+  secops-worker-1:
+    image: python:3.12-slim
+    container_name: saif_secops_node1
+    working_dir: /app
+    volumes:
+      - ../../../dl/3_Saif_Cyber_Threat_Intelligence:/app
+    environment:
+      - NODE_ID=Node-1-Primary
+      - PORT=5003
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn scikit-learn numpy joblib pydantic && python src/service.py"
+    restart: unless-stopped
+    networks:
+      - saif_secops_net
+
+  # 3. SecOps Threat Hunter Node 2 (Secondary AI Microservice)
+  secops-worker-2:
+    image: python:3.12-slim
+    container_name: saif_secops_node2
+    working_dir: /app
+    volumes:
+      - ../../../dl/3_Saif_Cyber_Threat_Intelligence:/app
+    environment:
+      - NODE_ID=Node-2-Secondary
+      - PORT=5003
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn scikit-learn numpy joblib pydantic && python src/service.py"
+    restart: unless-stopped
+    networks:
+      - saif_secops_net
+
+  # 4. Continuous Observability: Nagios Core 4.5
+  nagios-core:
+    image: jasonrivers/nagios:latest
+    container_name: saif_nagios
+    ports:
+      - "8084:80"
+    environment:
+      - NAGIOSADMIN_USER=nagiosadmin
+      - NAGIOSADMIN_PASS=saif12308813
+    restart: unless-stopped
+    networks:
+      - saif_secops_net
+
+networks:
+  saif_secops_net:
+    driver: bridge

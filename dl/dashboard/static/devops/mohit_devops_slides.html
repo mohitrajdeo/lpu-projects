@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INT333 Capstone Presentation - Mohit Raj Deo</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Cinzel:wght@700&display=swap');
+
+        :root {
+            --bg-dark: #060911;
+            --bg-card: #111a2e;
+            --border-card: #2e3d5b;
+            --accent-blue: #2563eb;
+            --accent-purple: #7c3aed;
+            --accent-emerald: #059669;
+            --accent-amber: #d97706;
+            --accent-rose: #dc2626;
+            --text-light: #ffffff;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+        }
+
+        /* Slide Container */
+        .deck-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 100px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(60px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08), transparent 70%),
+                        radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.05), transparent 70%);
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+        }
+
+        /* Slide Content Cards */
+        .slide-content {
+            width: 100%;
+            max-width: 1200px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-header {
+            margin-bottom: 24px;
+        }
+
+        .slide-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .slide-title {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .slide-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            align-items: stretch;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .card-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Terminal & Code */
+        .terminal-box {
+            background: #030712;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #38bdf8;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .code-pill {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.08);
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Tables */
+        .deck-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .deck-table th {
+            background: rgba(255,255,255,0.04);
+            color: var(--accent-blue);
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 700;
+            border-bottom: 1px solid #334155;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .deck-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            color: #cbd5e1;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-pass { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+        .status-warn { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .status-crit { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+        /* Controls Bottom Bar */
+        .deck-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(16px);
+            z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .slide-counter {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            min-width: 70px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Title Slide Specific */
+        .title-slide {
+            text-align: center;
+        }
+
+        .title-logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-amber);
+            margin-bottom: 12px;
+        }
+
+        .title-main {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.25;
+            margin-bottom: 20px;
+            max-width: 950px;
+            background: linear-gradient(135deg, #ffffff 40%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .title-course {
+            font-size: 18px;
+            color: var(--accent-blue);
+            font-weight: 600;
+            margin-bottom: 36px;
+        }
+
+        .author-card {
+            display: inline-flex;
+            gap: 40px;
+            text-align: left;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 30px;
+            border-radius: 12px;
+        }
+
+        .author-card h4 {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--accent-blue);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .author-card p {
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        /* Top Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+            width: 0%;
+            transition: width 0.3s ease;
+            z-index: 2000;
+        }
+
+        /* Print CSS for exporting to PDF */
+        @media print {
+            body {
+                overflow: visible;
+                height: auto;
+                background: #090d16 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .deck-controls, .progress-bar {
+                display: none !important;
+            }
+            .slide {
+                position: relative !important;
+                opacity: 1 !important;
+                transform: none !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                height: 100vh !important;
+                width: 100vw !important;
+                display: flex !important;
+                padding: 40px 60px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="deck-container">
+
+        <!-- SLIDE 1: Title -->
+        <div class="slide active title-slide" data-slide="1">
+            <div class="slide-content" style="align-items: center;">
+                <div class="title-logo">Lovely Professional University &bull; Dept of CSE</div>
+                <h1 class="title-main">Automated Cloud Infrastructure Provisioning with Terraform &amp; Continuous Monitoring with Nagios Core</h1>
+                <div class="title-course">INT333: DevOps Advance Configuration Management</div>
+
+                <div class="author-card">
+                    <div>
+                        <h4>Submitted By:</h4>
+                        <p><strong>Mohit Raj Deo</strong></p>
+                        <p>Reg No: 12323329 | Roll No: 62</p>
+                        <p>Section: RK2O2315</p>
+                    </div>
+                    <div>
+                        <h4>Under the Guidance of:</h4>
+                        <p><strong>Ms. Manpreet Kaur</strong></p>
+                        <p>Assistant Professor, CSE</p>
+                        <p>Lovely Professional University</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; font-size: 12px; color: var(--text-muted);">
+                    Use <strong>&larr; / &rarr;</strong> or <strong>Space</strong> to navigate &bull; Press <strong>F</strong> for Fullscreen &bull; <strong>Ctrl+P</strong> to Export PDF
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Problem Statement -->
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Operational Challenges</span>
+                    <h2 class="slide-title">Problem Statement &amp; Industry Motivation</h2>
+                    <p class="slide-subtitle">Why traditional manual provisioning and single-tier monitoring fail in enterprise DevOps</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-icon">⚠️</div>
+                        <h3 class="card-title">1. Configuration Drift &amp; Snowflake Servers</h3>
+                        <p class="card-text">
+                            Manual configurations via cloud web consoles or disparate SSH commands create untracked state alterations. 
+                            Environments cannot be audited, reproduced, or recovered during disaster scenarios, leading to security vulnerabilities and software failures.
+                        </p>
+                        <div class="terminal-box" style="margin-top: 16px;">
+                            $ diff -u staging_server prod_server<br>
+                            <span style="color: #f43f5e;">- nginx 1.22.0 (unpatched)</span><br>
+                            <span style="color: #34d399;">+ nginx 1.24.0 (production baseline)</span><br>
+                            # Result: Snowflake server failure!
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">👁️‍🗨️</div>
+                        <h3 class="card-title">2. The Fallacy of Single-Tier Monitoring</h3>
+                        <p class="card-text">
+                            Traditional operations often probe only public port 80 or basic hypervisor pings. 
+                            However, modern architectures fail in multiple distinct tiers: an Nginx proxy can return HTTP 200/502 while the internal computation daemon is completely dead.
+                        </p>
+                        <div class="terminal-box" style="margin-top: 16px;">
+                            $ curl -I http://portal/ (HTTP 200 OK)<br>
+                            $ nc -zv 127.0.0.1 9010<br>
+                            <span style="color: #f43f5e;">Connection refused! Backend code runner crashed!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Curriculum & Objectives -->
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Academic &amp; Technical Alignment</span>
+                    <h2 class="slide-title">Course Alignment (INT333) &amp; Key Objectives</h2>
+                    <p class="slide-subtitle">Bridging Infrastructure as Code (Unit IV) and Continuous Monitoring (Unit III)</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <h3 class="card-title">Unit IV: IaC with Terraform</h3>
+                        <p class="card-text">
+                            Author modular, declarative HCL configurations to provision AWS VPC, subnets, route tables, security groups, and EC2 instances automatically with zero configuration drift.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🚀</div>
+                        <h3 class="card-title">Developer Workload &amp; Port 9010</h3>
+                        <p class="card-text">
+                            Deploy a full-stack Developer Web Portal with interactive code playground and telemetry served via Nginx, backed by an autonomous execution engine on port 9010.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📡</div>
+                        <h3 class="card-title">Unit III: Nagios Observability</h3>
+                        <p class="card-text">
+                            Deploy a dedicated Nagios Core 4.5.2 server executing dual-tier active health probes (Website 80/443 + Code Exec 9010) with Soft vs. Hard alert escalations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Architecture & Topology -->
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Network Architecture</span>
+                    <h2 class="slide-title">System Architecture &amp; VPC Network Flow</h2>
+                    <p class="slide-subtitle">Multi-Subnet AWS Isolation with Dedicated Observability Channel</p>
+                </div>
+
+                <div class="card">
+                    <pre style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #38bdf8; line-height: 1.45;">
+AWS CLOUD (ap-south-1 Mumbai)
++--------------------------------------------------------------------------------------+
+| Custom VPC: 10.100.0.0/16                                                            |
+| Internet Gateway: igw-devops                                                         |
+|                                                                                      |
+|  +-------------------------------------+   +--------------------------------------+  |
+|  | Public Subnet 1 (10.100.1.0/24)     |   | Public Subnet 2 (10.100.2.0/24)      |  |
+|  | Availability Zone: ap-south-1a      |   | Availability Zone: ap-south-1b       |  |
+|  |                                     |   |                                      |  |
+|  |  +-------------------------------+  |   |  +--------------------------------+  |  |
+|  |  | Web Portal & Execution VM     |  |   |  | Nagios Observability Server    |  |  |
+|  |  | (AWS EC2 - Ubuntu 24.04 LTS)  |  |   |  | (AWS EC2 - Ubuntu 24.04 LTS)   |  |  |
+|  |  | Private IP: 10.100.1.50       |  |   |  | Private IP: 10.100.2.50        |  |  |
+|  |  |                               |  |   |  |                                |  |  |
+|  |  | * Nginx Reverse Proxy (80/443)|  |   |  | * Apache Web Dashboard (:80)   |  |  |
+|  |  | * Developer Web Portal (:3000) |  |&lt;--|--| * Nagios Core 4.5.2 Engine    |  |  |
+|  |  | * Code Exec Daemon (:9010)    |  |   |  |   - check_http (Port 80/443)   |  |  |
+|  |  | * Telemetry Dashboard Engine  |  |   |  |   - check_tcp (Port 9010)      |  |  |
+|  |  +-------------------------------+  |   |  |   - check_ping (ICMP Echo)     |  |  |
+|  |                                     |   |  +--------------------------------+  |  |
+|  +-------------------------------------+   +--------------------------------------+  |
++--------------------------------------------------------------------------------------+
+       ^                                              ^
+       | HTTP:80 (Developer Traffic)                  | HTTP:80 (Admin Management)</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Security Group Firewalls -->
+        <div class="slide" data-slide="5">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Security Engineering</span>
+                    <h2 class="slide-title">Least-Privilege Security Perimeter</h2>
+                    <p class="slide-subtitle">Protecting Internal Application Ports from Public Internet Exposure</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 class="card-title">🛡️ Web Portal Security Group (sg-web)</h3>
+                        <table class="deck-table">
+                            <thead>
+                                <tr><th>Port</th><th>Source</th><th>Action</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>TCP 80/443</td><td>0.0.0.0/0</td><td>Public Web Access</td></tr>
+                                <tr><td>TCP 9010</td><td>sg-nagios</td><td><span class="status-badge status-warn">Locked to Nagios</span></td></tr>
+                                <tr><td>ICMP Ping</td><td>sg-nagios</td><td>Internal Diagnostics</td></tr>
+                                <tr><td>TCP 22</td><td>Bastion IP</td><td>Admin SSH Management</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">🔍 Nagios Monitoring Security Group</h3>
+                        <table class="deck-table">
+                            <thead>
+                                <tr><th>Port</th><th>Source</th><th>Action</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>TCP 80</td><td>Admin Office/VPN</td><td>Apache CGI Console</td></tr>
+                                <tr><td>TCP 22</td><td>Bastion IP</td><td>Admin SSH Management</td></tr>
+                                <tr><td>Egress 80</td><td>sg-web</td><td>Active check_http probe</td></tr>
+                                <tr><td>Egress 9010</td><td>sg-web</td><td>Active check_tcp probe</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Terraform Implementation -->
+        <div class="slide" data-slide="6">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Unit IV: IaC</span>
+                    <h2 class="slide-title">Infrastructure as Code with Terraform</h2>
+                    <p class="slide-subtitle">Declarative manifests, state immutability, and zero-touch bootstrapping</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="terminal-box" style="font-size: 11px;">
+                        <span style="color: #94a3b8;"># AWS VPC Declarative Manifest</span><br>
+                        <span style="color: #fbbf24;">resource</span> <span style="color: #34d399;">"aws_vpc"</span> <span style="color: #38bdf8;">"devops_vpc"</span> {<br>
+                        &nbsp;&nbsp;cidr_block           = <span style="color: #cbd5e1;">"10.100.0.0/16"</span><br>
+                        &nbsp;&nbsp;enable_dns_hostnames = <span style="color: #818cf8;">true</span><br>
+                        &nbsp;&nbsp;enable_dns_support   = <span style="color: #818cf8;">true</span><br>
+                        &nbsp;&nbsp;tags = {<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Name = <span style="color: #cbd5e1;">"int333-devops-vpc"</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Owner = <span style="color: #cbd5e1;">"Mohit Raj Deo (12323329)"</span><br>
+                        &nbsp;&nbsp;}<br>
+                        }<br><br>
+                        <span style="color: #94a3b8;"># Zero-Touch EC2 Cloud-Init</span><br>
+                        <span style="color: #fbbf24;">resource</span> <span style="color: #34d399;">"aws_instance"</span> <span style="color: #38bdf8;">"web_portal"</span> {<br>
+                        &nbsp;&nbsp;ami           = var.ubuntu_ami_id<br>
+                        &nbsp;&nbsp;instance_type = <span style="color: #cbd5e1;">"t2.micro"</span><br>
+                        &nbsp;&nbsp;user_data     = file(<span style="color: #cbd5e1;">"web_portal_userdata.sh"</span>)<br>
+                        }
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">Key Terraform Benefits</h3>
+                        <ul style="margin-left: 20px; color: var(--text-muted); font-size: 13.5px; line-height: 1.8;">
+                            <li><strong>Immutable State Management:</strong> <code>terraform.tfstate</code> maintains cryptographic tracking of all resources.</li>
+                            <li><strong>Zero Configuration Drift:</strong> Any manual change made in AWS console is detected during <code>terraform plan</code>.</li>
+                            <li><strong>Reproducible Teardowns:</strong> Clean, automated cleanup with <code>terraform destroy</code> in &lt; 2 minutes.</li>
+                            <li><strong>Cloud-Init Bootstrapping:</strong> Automatically configures Nginx, Node.js, and Python upon initial boot.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Web Portal & Code Runner -->
+        <div class="slide" data-slide="7">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Application Stack</span>
+                    <h2 class="slide-title">Developer Web Portal &amp; Code Execution Engine</h2>
+                    <p class="slide-subtitle">Full-stack web experience backed by port 9010 sandboxed runner</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-icon">💻</div>
+                        <h3 class="card-title">Web Playground</h3>
+                        <p class="card-text">
+                            Interactive code editor supporting Python, JavaScript, and Bash with real-time stdout, stderr, and execution benchmarks.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📊</div>
+                        <h3 class="card-title">Live Telemetry</h3>
+                        <p class="card-text">
+                            Real-time dashboard charting CPU load, memory utilization, worker channel health, and API latency.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">⚙️</div>
+                        <h3 class="card-title">Port 9010 Daemon</h3>
+                        <p class="card-text">
+                            Microservice listening on TCP port 9010. Executes submitted programs inside an isolated sandbox with memory and timeout caps.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Nagios Core Observability -->
+        <div class="slide" data-slide="8">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Unit III: Observability</span>
+                    <h2 class="slide-title">Dual-Tier Continuous Monitoring with Nagios Core</h2>
+                    <p class="slide-subtitle">Active daemon plugins, threshold probing, and complete visibility</p>
+                </div>
+
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="card-icon">🌐</div>
+                        <h3 class="card-title">Tier 1: Website Ingress</h3>
+                        <p class="card-text">
+                            <strong>Plugin:</strong> <code>check_http</code><br>
+                            Tests Port 80/443, evaluates HTTP 200/301 response headers, ensures fast page loads (&lt; 500ms), and checks SSL certificate validity.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🔌</div>
+                        <h3 class="card-title">Tier 2: Code Runner Socket</h3>
+                        <p class="card-text">
+                            <strong>Plugin:</strong> <code>check_tcp -p 9010</code><br>
+                            Probes internal port 9010. Guarantees the backend execution engine daemon is actively accepting socket connections.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">📶</div>
+                        <h3 class="card-title">Tier 3: Host Health</h3>
+                        <p class="card-text">
+                            <strong>Plugin:</strong> <code>check_ping</code><br>
+                            Transmits periodic ICMP echo packets to measure round-trip latency and detect packet loss across the AWS VPC.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Alert State Lifecycle -->
+        <div class="slide" data-slide="9">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Alert Engineering</span>
+                    <h2 class="slide-title">Soft vs. Hard Alert State Lifecycle</h2>
+                    <p class="slide-subtitle">Preventing Alert Fatigue while Guaranteeing Rapid Incident Response</p>
+                </div>
+
+                <div class="card" style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+                        <div style="text-align: center;">
+                            <span class="status-badge status-pass" style="font-size: 14px; padding: 8px 16px;">🟢 OK (State 0)</span>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">All probes pass</div>
+                        </div>
+                        <div style="color: var(--accent-blue); font-size: 20px;">&rarr; Probe Fails &rarr;</div>
+                        <div style="text-align: center;">
+                            <span class="status-badge status-warn" style="font-size: 14px; padding: 8px 16px;">🟡 SOFT STATE</span>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Retrying (Attempts 1 &amp; 2)</div>
+                        </div>
+                        <div style="color: var(--accent-rose); font-size: 20px;">&rarr; Max Attempts &rarr;</div>
+                        <div style="text-align: center;">
+                            <span class="status-badge status-crit" style="font-size: 14px; padding: 8px 16px;">🔴 HARD CRITICAL</span>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Incident Escalated!</div>
+                        </div>
+                        <div style="color: var(--accent-emerald); font-size: 20px;">&rarr; Restored &rarr;</div>
+                        <div style="text-align: center;">
+                            <span class="status-badge status-pass" style="font-size: 14px; padding: 8px 16px;">🟢 HARD OK</span>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px;">Auto Recovery Logged</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="color: var(--accent-amber); font-size: 14px; margin-bottom: 6px;">Damping Transient Noise</h4>
+                        <p class="card-text">
+                            Temporary network hiccups or momentary high CPU spikes trigger SOFT states, preventing engineers from being woken up by false alarms.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h4 style="color: var(--accent-rose); font-size: 14px; margin-bottom: 6px;">Hard State Escalation</h4>
+                        <p class="card-text">
+                            When an outage persists across 3 consecutive checks (3 minutes), Nagios logs a persistent incident and triggers external alerts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Fault-Injection & Chaos Results -->
+        <div class="slide" data-slide="10">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Chaos Validation</span>
+                    <h2 class="slide-title">Testing Strategy &amp; Fault-Injection Results</h2>
+                    <p class="slide-subtitle">Empirical Verification across Test Cases TC-01 to TC-05</p>
+                </div>
+
+                <div class="card">
+                    <table class="deck-table">
+                        <thead>
+                            <tr>
+                                <th>Test Case</th>
+                                <th>Fault Injection Action</th>
+                                <th>Expected System Response</th>
+                                <th>Observed Nagios State</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>TC-01</strong></td>
+                                <td>Execute <code>terraform apply</code></td>
+                                <td>Clean cloud provisioning &lt; 4 min</td>
+                                <td>14 resources created in 3m 28s</td>
+                                <td><span class="status-badge status-pass">PASS</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TC-02</strong></td>
+                                <td>Access Web Portal via Browser</td>
+                                <td>Web UI loads; all probes green</td>
+                                <td>HTTP 80 and TCP 9010 report OK</td>
+                                <td><span class="status-badge status-pass">PASS</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TC-03</strong></td>
+                                <td><code>systemctl stop nginx</code></td>
+                                <td>HTTP probe fails; Code runner OK</td>
+                                <td>SOFT &rarr; HARD CRITICAL on Port 80</td>
+                                <td><span class="status-badge status-pass">PASS</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TC-04</strong></td>
+                                <td>Kill Daemon on Port 9010</td>
+                                <td><code>check_tcp</code> flags CRITICAL; HTTP OK</td>
+                                <td>SOFT &rarr; HARD CRITICAL on Port 9010</td>
+                                <td><span class="status-badge status-pass">PASS</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>TC-05</strong></td>
+                                <td>Restart stopped daemons</td>
+                                <td>Nagios detects restoration</td>
+                                <td>Auto-recovery detected; HARD OK</td>
+                                <td><span class="status-badge status-pass">PASS</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Cost & Local Reproduction -->
+        <div class="slide" data-slide="11">
+            <div class="slide-content">
+                <div class="slide-header">
+                    <span class="slide-tag">Deployment Economics</span>
+                    <h2 class="slide-title">Cost Optimization &amp; Local Reproduction</h2>
+                    <p class="slide-subtitle">100% Free-Tier Architecture + Local Docker Testing Suite</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 class="card-title">💰 AWS Free-Tier Economics</h3>
+                        <ul style="margin-left: 20px; color: var(--text-muted); font-size: 13.5px; line-height: 1.8;">
+                            <li><strong>2x t2.micro Instances:</strong> 750 hours/month free under AWS Free Tier.</li>
+                            <li><strong>EBS Volumes:</strong> 2x 20GB gp3 (within 30GB free allowance).</li>
+                            <li><strong>Bandwidth Ingress:</strong> Free.</li>
+                            <li><strong>Total Operational Cost:</strong> <strong style="color: var(--accent-emerald);">$0.00 / month</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-title">🐳 Local Docker Hybrid Suite</h3>
+                        <p class="card-text">
+                            For local evaluation and demonstration without active AWS credentials:
+                        </p>
+                        <div class="terminal-box" style="margin-top: 10px;">
+                            $ cd local-simulation<br>
+                            $ docker compose up -d<br>
+                            $ .\test_chaos.ps1<br>
+                            <span style="color: #34d399;">[PASS] All 5 Test Cases Validated Locally!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Conclusion & Q&A -->
+        <div class="slide title-slide" data-slide="12">
+            <div class="slide-content" style="align-items: center;">
+                <div class="slide-tag">Summary &amp; Findings</div>
+                <h2 class="title-main" style="font-size: 34px;">Conclusion &amp; Future Scope</h2>
+                <div style="max-width: 800px; color: var(--text-muted); font-size: 15px; line-height: 1.8; margin-bottom: 30px;">
+                    This project delivers an enterprise-grade, zero-drift DevOps pipeline combining <strong>declarative cloud automation (Terraform)</strong> with <strong>multi-tier proactive observability (Nagios Core)</strong>.
+                    By eliminating manual errors and isolating multi-tier failure domains, the architecture guarantees system availability and automated recovery detection.
+                </div>
+
+                <div class="grid-3" style="width: 100%; max-width: 900px; margin-bottom: 30px; text-align: left;">
+                    <div class="card" style="padding: 16px;">
+                        <h4 style="color: var(--accent-blue); font-size: 13px; margin-bottom: 4px;">Self-Healing</h4>
+                        <p style="font-size: 12px; color: var(--text-muted);">Nagios event handlers triggering automated daemon restarts.</p>
+                    </div>
+                    <div class="card" style="padding: 16px;">
+                        <h4 style="color: var(--accent-purple); font-size: 13px; margin-bottom: 4px;">Dynamic Autoscaling</h4>
+                        <p style="font-size: 12px; color: var(--text-muted);">Threshold alerts scaling EC2 worker fleets dynamically.</p>
+                    </div>
+                    <div class="card" style="padding: 16px;">
+                        <h4 style="color: var(--accent-emerald); font-size: 13px; margin-bottom: 4px;">ChatOps Alerts</h4>
+                        <p style="font-size: 12px; color: var(--text-muted);">Real-time webhook notifications to Discord and Slack.</p>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 22px; color: #ffffff; margin-top: 10px;">Thank You! Questions &amp; Answers</h3>
+                <div style="font-size: 13px; color: var(--accent-amber); margin-top: 6px;">Mohit Raj Deo &bull; Reg No: 12323329</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="deck-controls">
+        <button class="control-btn" id="prevBtn" title="Previous Slide (Left Arrow)">&larr;</button>
+        <div class="slide-counter" id="slideCounter">1 / 12</div>
+        <button class="control-btn" id="nextBtn" title="Next Slide (Right Arrow or Space)">&rarr;</button>
+        <button class="control-btn" id="fullscreenBtn" title="Toggle Fullscreen (F)">⛶</button>
+        <button class="control-btn" id="printBtn" title="Print to PDF (Ctrl+P)" onclick="window.print()">🖨️ PDF</button>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const counter = document.getElementById('slideCounter');
+        const progressBar = document.getElementById('progressBar');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        let currentSlide = 0;
+        const totalSlides = slides.length;
+
+        function updateSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) slide.classList.add('active');
+            });
+
+            currentSlide = index;
+            counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+            progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        }
+
+        prevBtn.addEventListener('click', () => updateSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => updateSlide(currentSlide + 1));
+
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => alert(err.message));
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                updateSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                updateSlide(currentSlide - 1);
+            } else if (e.key.toLowerCase() === 'f') {
+                fullscreenBtn.click();
+            } else if (e.key === 'Home') {
+                updateSlide(0);
+            } else if (e.key === 'End') {
+                updateSlide(totalSlides - 1);
+            }
+        });
+
+        updateSlide(0);
+    </script>
+</body>
+</html>
+

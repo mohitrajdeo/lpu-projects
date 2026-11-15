@@ -1,0 +1,12 @@
+# SSH Security Baseline Hardened by Puppet
+Port 22
+Protocol 2
+PermitRootLogin no
+PasswordAuthentication yes
+PubkeyAuthentication yes
+MaxAuthTries 3
+X11Forwarding no
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem sftp /usr/lib/openssh/sftp-server
+

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Multi-Agent Software Engineering Platform | Akash Choudhary (12301625)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #060911;
+      --bg-surface: #0c1220;
+      --bg-card: #111a2e;
+      --border-solid: #2e3d5b;
+      --accent-primary: #7c3aed;
+      --solid-green: #059669;
+      --solid-red: #dc2626;
+      --solid-blue: #2563eb;
+      --solid-violet: #7c3aed;
+      --solid-amber: #d97706;
+      --text-main: #ffffff;
+      --text-sub: #cbd5e1;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 0;
+      margin: 0;
+    }
+    header.report-header {
+      background: var(--bg-surface);
+      border-bottom: 2px solid var(--border-solid);
+      padding: 20px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 800;
+      box-shadow: 0 4px 0 #000;
+    }
+    .actions-group {
+      display: flex;
+      gap: 12px;
+    }
+    .btn {
+      background: var(--accent-primary);
+      color: #fff;
+      border: 2px solid rgba(255,255,255,0.2);
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 0 #000;
+      font-family: inherit;
+      transition: all 0.1s ease;
+    }
+    .btn:hover {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 #000;
+    }
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: none;
+    }
+    .btn-dark {
+      background: #1e293b;
+      border-color: #334155;
+      color: #f8fafc;
+    }
+    .container {
+      max-width: 1040px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+    .cover-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-solid);
+      border-radius: 12px;
+      padding: 48px;
+      box-shadow: 0 8px 0 #000;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .university-sub {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .report-main-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+    .report-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      max-width: 820px;
+      margin: 0 auto 32px;
+    }
+    .meta-box {
+      background: #090e1a;
+      border: 2px solid var(--border-solid);
+      border-radius: 8px;
+      padding: 20px 32px;
+      display: inline-flex;
+      gap: 48px;
+      text-align: left;
+      box-shadow: 0 4px 0 #000;
+    }
+    .meta-item label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .meta-item span {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .section-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-solid);
+      border-radius: 10px;
+      padding: 32px;
+      box-shadow: 0 6px 0 #000;
+      margin-bottom: 32px;
+    }
+    .section-heading {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-solid);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--accent-primary);
+    }
+    .arch-card {
+      background: #080d1a;
+      border: 2px solid var(--accent-primary);
+      border-radius: 8px;
+      padding: 18px 24px;
+      margin: 20px 0;
+      box-shadow: 0 4px 0 #000;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .arch-stat label {
+      display: block;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--text-muted);
+    }
+    .arch-stat span {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+    table.data-table th, table.data-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border: 1px solid var(--border-solid);
+    }
+    table.data-table th {
+      background: #090e1a;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    table.data-table tr:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+    .badge-pass {
+      background: #064e3b;
+      color: #34d399;
+      border: 1px solid var(--solid-green);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 800;
+      font-size: 11px;
+    }
+    code, pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+    }
+    pre.code-block {
+      background: #000000;
+      border: 2px solid var(--border-solid);
+      border-radius: 8px;
+      padding: 16px;
+      color: #38bdf8;
+      overflow-x: auto;
+      margin: 16px 0;
+      line-height: 1.5;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+    }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      header.report-header { display: none !important; }
+      .cover-card, .section-card { border: 1px solid #ccc !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+      .arch-card { border: 1px solid #000 !important; background: #f5f5f5 !important; color: #000 !important; box-shadow: none !important; }
+      .arch-stat span, .meta-item span, .report-main-title { color: #000 !important; }
+      pre.code-block { background: #f8f8f8 !important; color: #000 !important; border: 1px solid #ccc !important; }
+      .btn { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="report-header">
+    <div class="brand-group">
+      <div class="brand-badge">⚡</div>
+      <div>
+        <h1 style="font-size: 16px; font-weight: 800;">INT422 Capstone Final Report</h1>
+        <p style="font-size: 11px; color: var(--text-muted);">Akash Choudhary (12301625 | Roll: 11) &bull; Lovely Professional University</p>
+      </div>
+    </div>
+    <div class="actions-group">
+      <button class="btn btn-dark" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <a href="http://localhost:5002" target="_blank" class="btn">🚀 Open Live Application &nearr;</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Cover Page Card -->
+    <div class="cover-card">
+      <div class="university-sub">Lovely Professional University &bull; School of Computer Science &amp; Engineering</div>
+      <h1 class="report-main-title">Autonomous Multi-Agent Software Engineering Platform</h1>
+      <p class="report-subtitle">Specification RAG, AST Syntactic Parsing, McCabe Cyclomatic Complexity, Random Forest Defect Auditing & Isolated Sandbox Testing</p>
+      <div class="meta-box">
+        <div class="meta-item">
+          <label>Candidate</label>
+          <span>Akash Choudhary</span>
+        </div>
+        <div class="meta-item">
+          <label>Registration No</label>
+          <span>12301625</span>
+        </div>
+        <div class="meta-item">
+          <label>Roll Number</label>
+          <span>11</span>
+        </div>
+        <div class="meta-item">
+          <label>Course Code</label>
+          <span>INT422</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter 1: Abstract -->
+    <div class="section-card">
+      <h2 class="section-heading"><span>📋</span> Executive Summary &amp; Abstract</h2>
+      <p>Generative AI code synthesis frequently introduces logical vulnerabilities, structural complexity, and regressions into enterprise software repositories. This project presents an Autonomous Multi-Agent Software Engineering Platform featuring natural language specification decomposition via RAG, Abstract Syntax Tree (AST) concrete visitor parsing, McCabe Cyclomatic Complexity & Halstead Volume calculations, a pre-trained Random Forest defect classifier, and an isolated in-memory unit test sandbox achieving 100% statement coverage prior to code commit.</p>
+      
+      <!-- Model Card -->
+      <div class="arch-card">
+        <div class="arch-stat">
+          <label>Core ML Model</label>
+          <span>Random Forest (120 Trees)</span>
+        </div>
+        <div class="arch-stat">
+          <label>AST Engine</label>
+          <span>Python Concrete Visitor</span>
+        </div>
+        <div class="arch-stat">
+          <label>Complexity Suite</label>
+          <span>McCabe Cyclomatic + Halstead</span>
+        </div>
+        <div class="arch-stat">
+          <label>Execution Sandbox</label>
+          <span>In-Memory Unit Test Runner</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter 2: System Architecture -->
+    <div class="section-card">
+      <h2 class="section-heading"><span>🏗️</span> System Architecture &amp; Engineering Design</h2>
+      <p>The 4-stage pipeline comprises: (1) Architect Agent RAG decomposing user prompts into Clean Architecture design patterns; (2) Developer Agent synthesizing modular Python code; (3) AST Static Parser measuring Cyclomatic Complexity, LOC, and Halstead Volume; and (4) Sandbox Tester executing automated assertions with statement coverage measurement.</p>
+      <pre class="code-block">NATURAL LANGUAGE SPEC -> ARCHITECT RAG -> DEVELOPER GENERATOR -> AST PARSER (CC, Halstead) -> RANDOM FOREST AUDIT -> TEST SANDBOX</pre>
+    </div>
+
+    <!-- Chapter 3: Empirical Chaos Verification -->
+    <div class="section-card">
+      <h2 class="section-heading"><span>🧪</span> Empirical Validation &amp; Chaos Engineering Matrix</h2>
+      <p>The system was evaluated against automated end-to-end chaos testing (local-simulation/test_chaos.ps1) achieving a 100% verification pass rate:</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Test ID</th>
+            <th>Scenario</th>
+            <th>Injection Action</th>
+            <th>Observed Outcome</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>TC-01</td><td>Architect RAG</td><td>Input natural language prompt</td><td>Design pattern & security policy matched</td><td><span class="badge-pass">PASS</span></td></tr>
+<tr><td>TC-02</td><td>AST Metric Parsing</td><td>Analyze generated code AST</td><td>LOC: 19, CC: 4, AST Depth: 10</td><td><span class="badge-pass">PASS</span></td></tr>
+<tr><td>TC-03</td><td>Random Forest Defect Audit</td><td>Predict defect probability</td><td>Defect Prob: 1.2%, Rating: PRODUCTION_READY</td><td><span class="badge-pass">PASS</span></td></tr>
+<tr><td>TC-04</td><td>Dynamic Sandbox Execution</td><td>Execute unit test suite</td><td>3/3 Tests Passed, Coverage: 100.0%</td><td><span class="badge-pass">PASS</span></td></tr>
+<tr><td>TC-05</td><td>Regression Prevention</td><td>Inject syntax & semantic errors</td><td>Build quarantined & defect flagged immediately</td><td><span class="badge-pass">PASS</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Chapter 4: Production Deployment & Parity -->
+    <div class="section-card">
+      <h2 class="section-heading"><span>🚀</span> Production Deployment &amp; Front-End Architecture</h2>
+      <p>The frontend is engineered as a standalone React 19 + Vite Single-Page Application in Real Hard Solid Colours with Hard Violet (#7c3aed) theme, 5-axis Chart.js radar charts, and validated code output viewports. Served on Port 5002.</p>
+      <div style="margin-top: 18px; display: flex; gap: 14px;">
+        <span style="background: #111a2e; border: 2px solid var(--border-solid); padding: 8px 16px; border-radius: 6px; font-size: 12px; font-family: 'JetBrains Mono'; color: #38bdf8;">
+          ACTIVE PORT: Port 5002
+        </span>
+        <span style="background: #064e3b; border: 2px solid var(--solid-green); padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 800; color: #34d399;">
+          ZERO-BLOAT SUBMISSION ZIP VERIFIED
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

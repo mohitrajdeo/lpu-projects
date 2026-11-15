@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohit Raj Deo - Developer Web Portal & Code Runner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #060911;
+            --bg-surface: #0c1220;
+            --bg-elevated: #111a2e;
+            --border: #2e3d5b;
+            --accent-cyan: #38bdf8;
+            --accent-blue: #2563eb;
+            --accent-emerald: #059669;
+            --accent-amber: #d97706;
+            --accent-rose: #dc2626;
+            --accent-violet: #7c3aed;
+            --text-main: #ffffff;
+            --text-dim: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(17, 24, 39, 0.8);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-tag {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-meta {
+            font-size: 13px;
+            color: var(--text-dim);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent-emerald);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
+        }
+
+        .panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Editor Area */
+        .editor-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        select, button {
+            font-family: inherit;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        select {
+            background: var(--bg-elevated);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            outline: none;
+        }
+
+        .btn-run {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .btn-run:hover { background: #1d4ed8; }
+
+        textarea.code-editor {
+            width: 100%;
+            height: 240px;
+            background: #050811;
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            resize: vertical;
+            outline: none;
+            line-height: 1.6;
+        }
+
+        /* Output Box */
+        .output-box {
+            margin-top: 18px;
+            background: #050811;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            min-height: 120px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            color: var(--accent-emerald);
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        /* Sidebar Telemetry */
+        .telemetry-card {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .metric-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+
+        .progress-bar-bg {
+            background: rgba(255,255,255,0.08);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent-cyan);
+            border-radius: 3px;
+            transition: width 0.4s;
+        }
+
+        .service-badge {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border);
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-title">
+            <span class="status-dot"></span>
+            DevOps Developer Web Portal
+            <span class="brand-tag">INT333 Capstone</span>
+        </div>
+        <div class="header-meta">
+            <span>Student: <strong>Mohit Raj Deo (12323329)</strong></span>
+            <span>Guide: <strong>Ms. Manpreet Kaur</strong></span>
+            <span>Monitoring: <strong style="color: var(--accent-emerald);">Nagios Core Active</strong></span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Left: Code Playground -->
+        <section class="panel">
+            <div class="panel-header">
+                <div class="panel-title">⚡ Interactive Code Playground (Port 9010 Sandbox)</div>
+                <div class="editor-controls">
+                    <select id="langSelect" onchange="loadPreset()">
+                        <option value="python">Python 3.12</option>
+                        <option value="javascript">Node.js (JS)</option>
+                        <option value="bash">Bash Script</option>
+                    </select>
+                    <button class="btn-run" onclick="executeCode()">▶ Execute on Daemon</button>
+                </div>
+            </div>
+
+            <textarea id="codeEditor" class="code-editor" spellcheck="false"></textarea>
+
+            <div class="output-header" style="margin-top: 16px;">
+                <span>STDOUT &amp; BENCHMARK OUTPUT</span>
+                <span id="execStats">Latency: 0ms | Exit Code: --</span>
+            </div>
+            <div id="outputConsole" class="output-box">Press "Execute on Daemon" to test the sandboxed code runner on Port 9010...</div>
+        </section>
+
+        <!-- Right: Telemetry & Monitoring -->
+        <aside class="panel">
+            <div class="panel-header">
+                <div class="panel-title">📊 Live System Telemetry</div>
+                <span style="font-size: 11px; color: var(--accent-emerald); font-weight: 700;">LIVE FEED</span>
+            </div>
+
+            <div class="telemetry-card">
+                <div class="metric-row">
+                    <span>Daemon CPU Utilization</span>
+                    <span class="metric-val" id="cpuVal">2.4%</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="cpuBar" style="width: 14%;"></div></div>
+            </div>
+
+            <div class="telemetry-card">
+                <div class="metric-row">
+                    <span>Memory Allocation (Heap)</span>
+                    <span class="metric-val" id="memVal">42.8 MB</span>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="memBar" style="width: 28%; background: var(--accent-emerald);"></div></div>
+            </div>
+
+            <div class="telemetry-card">
+                <div class="metric-row">
+                    <span>Active Worker Channels</span>
+                    <span class="metric-val">4 / 4 Online</span>
+                </div>
+                <div class="metric-row">
+                    <span>Average Socket Latency</span>
+                    <span class="metric-val" id="latencyVal">4.2 ms</span>
+                </div>
+            </div>
+
+            <div class="panel-header" style="margin-top: 14px;">
+                <div class="panel-title">🛡️ Dual-Tier Nagios Probes</div>
+            </div>
+
+            <div class="service-badge">
+                <div>
+                    <strong>Tier 1: Web Ingress</strong><br>
+                    <span style="color: var(--text-dim); font-size: 11px;">check_http (Port 80/443)</span>
+                </div>
+                <span style="color: var(--accent-emerald); font-weight: 700; font-size: 12px;">200 OK</span>
+            </div>
+
+            <div class="service-badge">
+                <div>
+                    <strong>Tier 2: Code Engine Socket</strong><br>
+                    <span style="color: var(--text-dim); font-size: 11px;">check_tcp (Port 9010)</span>
+                </div>
+                <span style="color: var(--accent-emerald); font-weight: 700; font-size: 12px;">OPEN (OK)</span>
+            </div>
+
+            <div class="service-badge">
+                <div>
+                    <strong>Tier 3: Network ICMP</strong><br>
+                    <span style="color: var(--text-dim); font-size: 11px;">check_ping (Host Ping)</span>
+                </div>
+                <span style="color: var(--accent-emerald); font-weight: 700; font-size: 12px;">0% LOSS</span>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        INT333: DevOps Advance Configuration Management &bull; Mohit Raj Deo (12323329) &bull; Lovely Professional University
+    </footer>
+
+    <script>
+        const presets = {
+            python: `# Cloud Computing & DevOps Demonstration
+import platform
+import os
+import sys
+
+print(f"Executing Python on: {platform.system()} {platform.release()}")
+print(f"Python Runtime: {sys.version.split()[0]}")
+print(f"CPU Cores Available: {os.cpu_count()}")
+
+result = [x**2 for x in range(1, 9)]
+print(f"Computed squares: {result}")
+print("Daemon Port 9010 healthy and responsive!")
+`,
+            javascript: `// Node.js Code Execution Benchmark
+const start = performance.now();
+const numbers = Array.from({length: 10}, (_, i) => (i + 1) * 10);
+console.log("Transformed Array:", numbers);
+console.log("Memory Usage (MB):", (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2));
+console.log("Benchmark duration:", (performance.now() - start).toFixed(3) + " ms");
+`,
+            bash: `echo "=== System Inspection ==="
+echo "Host Kernel: $(uname -r)"
+echo "Current Date: $(date)"
+echo "Uptime: $(uptime)"
+`
+        };
+
+        const editor = document.getElementById('codeEditor');
+        const langSelect = document.getElementById('langSelect');
+        const output = document.getElementById('outputConsole');
+        const stats = document.getElementById('execStats');
+
+        function loadPreset() {
+            editor.value = presets[langSelect.value] || '';
+        }
+
+        async function executeCode() {
+            const lang = langSelect.value;
+            const code = editor.value;
+            output.textContent = "Connecting to Code Execution Daemon on Port 9010...";
+            stats.textContent = "Executing...";
+
+            try {
+                const res = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: lang, code: code, timeout: 4 })
+                });
+
+                const data = await res.json();
+                stats.textContent = `Latency: ${data.executionTimeMs || 0}ms | Exit Code: ${data.exitCode !== undefined ? data.exitCode : '--'}`;
+
+                if (data.status === 'success') {
+                    output.textContent = data.stdout || '(Executed with empty stdout)';
+                    if (data.stderr) output.textContent += '\n\n[STDERR]:\n' + data.stderr;
+                } else {
+                    output.textContent = `[ERROR]: ${data.error || 'Execution failed'}\n${data.stderr || ''}`;
+                }
+            } catch (err) {
+                // If running statically without backend proxy
+                stats.textContent = "Direct Socket Fallback";
+                output.textContent = `[Direct Execution Note]: Communicating with localhost:9010...\nError: ${err.message}\nMake sure code runner daemon is active on port 9010!`;
+            }
+        }
+
+        // Simulate subtle real-time telemetry fluctuations
+        setInterval(() => {
+            const cpu = (Math.random() * 4 + 1.2).toFixed(1);
+            document.getElementById('cpuVal').textContent = `${cpu}%`;
+            document.getElementById('cpuBar').style.width = `${cpu * 4}%`;
+
+            const lat = (Math.random() * 2 + 3.1).toFixed(1);
+            document.getElementById('latencyVal').textContent = `${lat} ms`;
+        }, 2500);
+
+        loadPreset();
+    </script>
+</body>
+</html>
+

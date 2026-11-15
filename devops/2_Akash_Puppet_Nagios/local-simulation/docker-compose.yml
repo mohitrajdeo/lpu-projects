@@ -1,0 +1,34 @@
+services:
+  # 1. Puppet-Managed Autonomous SWE Platform AI Node
+  swe-agent-node:
+    image: python:3.12-slim
+    container_name: akash_swe_agent_node
+    ports:
+      - "8081:5002"
+    working_dir: /app
+    volumes:
+      - ../../../dl/2_Akash_Autonomous_SWE_System:/app
+    environment:
+      - PORT=5002
+      - NODE_NAME=akash_swe_platform
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn scikit-learn numpy joblib pydantic && python src/service.py"
+    restart: unless-stopped
+    networks:
+      - akash_puppet_net
+
+  # 2. Nagios Core & NRPE Continuous Monitoring Server
+  nagios-core:
+    image: jasonrivers/nagios:latest
+    container_name: akash_nagios
+    ports:
+      - "8082:80"
+    environment:
+      - NAGIOSADMIN_USER=nagiosadmin
+      - NAGIOSADMIN_PASS=akash12301625
+    restart: unless-stopped
+    networks:
+      - akash_puppet_net
+
+networks:
+  akash_puppet_net:
+    driver: bridge

@@ -1,0 +1,67 @@
+services:
+  # 1. AIOps Cloud Intelligence React + FastAPI Neural Telemetry Platform
+  aiops-platform:
+    image: python:3.12-slim
+    container_name: mohit_aiops_platform
+    ports:
+      - "5001:5001"
+    working_dir: /app
+    volumes:
+      - ../../../dl/1_Mohit_AIOps_Cloud_Intelligence:/app
+    environment:
+      - PORT=5001
+      - APP_ENV=production
+    command: sh -c "pip install --no-cache-dir fastapi uvicorn scikit-learn numpy joblib pydantic && python src/service.py"
+    restart: unless-stopped
+    networks:
+      - devops_net
+
+  # 2. Autonomous Backend Code Execution Daemon (Port 9010)
+  code-runner:
+    image: python:3.12-slim
+    container_name: int333_code_runner
+    working_dir: /app
+    volumes:
+      - ../app/code-runner:/app
+    command: python3 runner.py
+    restart: unless-stopped
+    networks:
+      - devops_net
+
+  # 3. High-Performance Nginx Reverse Proxy (Port 80 Ingress)
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: int333_nginx_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - aiops-platform
+      - code-runner
+    restart: unless-stopped
+    networks:
+      - devops_net
+
+  # 4. Nagios Core 4.5 Continuous Observability Engine
+  nagios-core:
+    image: jasonrivers/nagios:latest
+    container_name: int333_nagios_core
+    ports:
+      - "8080:80"
+    environment:
+      - NAGIOSADMIN_USER=nagiosadmin
+      - NAGIOSADMIN_PASS=int333devopspassword
+    volumes:
+      - ./nagios-local.cfg:/opt/nagios/etc/conf.d/devops.cfg:ro
+    depends_on:
+      - nginx-proxy
+      - code-runner
+    restart: unless-stopped
+    networks:
+      - devops_net
+
+networks:
+  devops_net:
+    driver: bridge
+

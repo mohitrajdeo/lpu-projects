@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Managed by Puppet - Akash Choudhary (12301625)</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 40px; }
+        .card { max-width: 600px; margin: auto; background: #1e293b; padding: 30px; border-radius: 8px; border-left: 4px solid #38bdf8; }
+        h1 { color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Puppet Master-Agent Node</h1>
+        <p><strong>Hostname:</strong> <%= @fqdn %></p>
+        <p><strong>Operating System:</strong> <%= @os['name'] %> <%= @os['release']['full'] %></p>
+        <p><strong>IP Address:</strong> <%= @ipaddress %></p>
+        <p><strong>Managed By:</strong> Puppet DSL (INT333 Capstone)</p>
+        <p><strong>Continuous Monitoring:</strong> Nagios Core 4.5.2 Active</p>
+    </div>
+</body>
+</html>
+
