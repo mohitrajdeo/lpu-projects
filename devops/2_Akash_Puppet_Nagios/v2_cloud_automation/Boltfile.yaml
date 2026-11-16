@@ -21,3 +21,4 @@ inventory:
       user: 'ubuntu'
       private-key: '~/.ssh/id_ed25519'
       host-key-check: false
+

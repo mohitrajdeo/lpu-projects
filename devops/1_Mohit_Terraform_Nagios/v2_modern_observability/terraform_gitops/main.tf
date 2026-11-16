@@ -70,3 +70,4 @@ output "telemetry_lake_arn" {
   description = "ARN of the secure telemetry lake"
   value       = aws_s3_bucket.telemetry_lake.arn
 }
+

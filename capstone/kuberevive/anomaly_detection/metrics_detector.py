@@ -11,6 +11,11 @@ from typing import Dict, List, Any, Tuple
 from collections import deque
 from sklearn.ensemble import IsolationForest
 
+try:
+    from .temporal_detector import TemporalAnomalyEngine
+except ImportError:
+    from temporal_detector import TemporalAnomalyEngine
+
 
 class RollingZScoreDetector:
     """
@@ -103,12 +108,14 @@ class MetricAnomalyDetector:
 
 class HybridAnomalyScorer:
     """
-    Ensemble engine reconciling statistical boundary thresholds with
-    unsupervised multi-variate isolation forest scores.
+    Ensemble engine reconciling statistical boundary thresholds,
+    unsupervised multi-variate isolation forest scores, and
+    v2.0 PyTorch 1D-CNN Temporal Autoencoder sequence trajectories.
     """
     def __init__(self, window_size: int = 30, z_threshold: float = 2.75):
         self.stat_detector = RollingZScoreDetector(window_size=window_size, z_threshold=z_threshold)
         self.ml_detector = MetricAnomalyDetector()
+        self.temporal_engine = TemporalAnomalyEngine()
 
     def evaluate_telemetry(self, telemetry_payload: Dict[str, float]) -> Dict[str, Any]:
         """
@@ -133,9 +140,13 @@ class HybridAnomalyScorer:
         # ML multi-variate score
         ml_anom, ml_score = self.ml_detector.score_sample(telemetry_payload)
 
+        # v2.0 PyTorch Temporal Autoencoder evaluation
+        temporal_eval = self.temporal_engine.score_temporal_window(telemetry_payload)
+        temp_anom = temporal_eval.get("is_anomaly", False)
+        temp_loss = temporal_eval.get("temporal_mse", 0.0)
+
         # Ensemble decision rule:
-        # If ML score > 0.70 OR more than one metric has statistically significant z-score
-        # OR critical thresholds exceeded (e.g. error rate > 5%, memory > 90%)
+        # If ML score > 0.70 OR temporal autoencoder anomaly OR high-z violations
         critical_violations = []
         if telemetry_payload.get("error_rate_pct", 0) > 5.0:
             critical_violations.append("error_rate_pct > 5.0%")
@@ -146,11 +157,12 @@ class HybridAnomalyScorer:
         if telemetry_payload.get("latency_ms", 0) > 1000.0:
             critical_violations.append("latency_ms > 1000ms")
 
-        is_overall_anomaly = bool(ml_anom or len(high_z_metrics) >= 2 or len(critical_violations) >= 1)
+        is_overall_anomaly = bool(ml_anom or temp_anom or len(high_z_metrics) >= 2 or len(critical_violations) >= 1)
         
         # Calculate combined severity score [0.0 - 1.0]
         severity = max(
             ml_score,
+            0.85 if temp_anom else 0.0,
             min(1.0, len(critical_violations) * 0.35 + (0.3 if len(high_z_metrics) > 0 else 0.0))
         )
 
@@ -158,6 +170,7 @@ class HybridAnomalyScorer:
             "is_anomaly": is_overall_anomaly,
             "severity_score": round(float(severity), 3),
             "ml_anomaly_score": round(float(ml_score), 3),
+            "temporal_anomaly": temporal_eval,
             "critical_violations": critical_violations,
             "stat_metrics": stat_flags,
             "offending_metrics": [m[0] for m in high_z_metrics] + [v.split()[0] for v in critical_violations]

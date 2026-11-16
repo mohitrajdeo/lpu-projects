@@ -304,3 +304,75 @@ async def toggle_remediation():
 @app.get("/metrics", response_class=PlainTextResponse)
 async def get_prometheus_metrics():
     return prometheus_exporter.generate_prometheus_payload()
+
+
+# -----------------------------------------------------------------------------
+# KubeRevive v2.0 Enterprise API Extensions
+# -----------------------------------------------------------------------------
+class V2TelemetryEvalRequest(BaseModel):
+    telemetry: Dict[str, float]
+
+class V2SOARRequest(BaseModel):
+    attacker_ip: str = "198.51.100.42"
+    action: str = "quarantine_threat_ip"
+
+class V2PatchValidationRequest(BaseModel):
+    code: str
+
+@app.post("/api/v2/telemetry/temporal-eval")
+async def evaluate_temporal_telemetry_v2(req: V2TelemetryEvalRequest):
+    """Evaluates telemetry with PyTorch 1D-CNN Temporal Convolutional Autoencoder."""
+    temp_res = anomaly_scorer.temporal_engine.score_temporal_window(req.telemetry)
+    return {
+        "status": "SUCCESS",
+        "version": "v2.0-Enterprise",
+        "temporal_evaluation": temp_res
+    }
+
+@app.post("/api/v2/soar/actuate")
+async def execute_soar_actuation_v2(req: V2SOARRequest):
+    """Executes multi-cloud SOAR containment (AWS WAFv2 + Linux kernel nftables)."""
+    plan = {
+        "plan_id": f"SOAR-{int(time.time())}",
+        "target_service": "ingress-balancer",
+        "primary_action": req.action,
+        "parameters": {"attacker_ip": req.attacker_ip}
+    }
+    result = remediation_engine.execute_plan(plan)
+    recent_system_logs.append(f"🛡️ [SOAR v2.0] Enforced zero-trust containment on IP {req.attacker_ip}")
+    return {
+        "status": "SUCCESS",
+        "version": "v2.0-Enterprise",
+        "actuation_result": result
+    }
+
+@app.post("/api/v2/cpg/validate-patch")
+async def validate_cpg_patch_v2(req: V2PatchValidationRequest):
+    """Validates remediation patch using Python AST Code Property Graph and cyclomatic complexity."""
+    val = planner.validate_patch_ast(req.code)
+    return {
+        "status": "SUCCESS",
+        "version": "v2.0-Enterprise",
+        "validation": val
+    }
+
+@app.get("/api/v2/overview")
+async def get_v2_system_overview():
+    """Returns KubeRevive v2.0 multi-agent architecture and model metadata."""
+    return {
+        "platform": "KubeRevive Enterprise SRE Intelligence",
+        "version": "2.0.0",
+        "modules": {
+            "temporal_autoencoder": "PyTorch 1D-CNN (W=12 time-steps)",
+            "isolation_forest": "Scikit-Learn Multi-Variate Unsupervised Ensemble",
+            "slm_cot_reasoning": "Local Zero-Token Chain-of-Thought SRE Synthesizer",
+            "soar_actuation": "AWS WAFv2 + Linux Kernel nftables + Puppet Bolt",
+            "cpg_ast_engine": "Python AST Cyclomatic Complexity & Diff Verifier"
+        },
+        "lead_architect": "Mohit Raj Deo (12323329 | Roll: 62)",
+        "co_leads": [
+            "Akash Choudhary (12301625 | Roll: 11)",
+            "Saif Siddique (12308813 | Roll: 44)"
+        ],
+        "status": "HEALTHY_OPTIMAL"
+    }

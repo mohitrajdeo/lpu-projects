@@ -27,3 +27,4 @@ hierarchy:
 
   - name: "Global Common Configuration"
     path: "common.yaml"
+

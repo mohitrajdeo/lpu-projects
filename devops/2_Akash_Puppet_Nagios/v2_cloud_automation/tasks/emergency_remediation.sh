@@ -20,3 +20,4 @@ else
     echo "[BOLT] ERROR: ${SERVICE_NAME} failed health status check."
     exit 1
 fi
+

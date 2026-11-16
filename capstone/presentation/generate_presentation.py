@@ -314,6 +314,28 @@ def create_presentation():
         p.font.color.rgb = TEXT_LIGHT
 
     # ----------------------------------------------------
+    # Slide 11b: KubeRevive v2.0 Enterprise Innovations
+    # ----------------------------------------------------
+    sv2 = add_blank_slide()
+    add_header(sv2, "KubeRevive v2.0 Enterprise Architecture Upgrades", "PRODUCTION V2.0 EXTENSIONS")
+    c_box = sv2.shapes.add_textbox(Inches(0.8), Inches(1.8), Inches(11.7), Inches(5.0))
+    tfv2 = c_box.text_frame
+    tfv2.word_wrap = True
+
+    v2_innovations = [
+        ("🧠 PyTorch Temporal 1D-CNN Autoencoder (TCAE):", "Analyzes sliding sequential metric trajectories (W=12 time-steps) to detect multi-variate drift and slow memory/socket leaks."),
+        ("⚡ Linux eBPF Kernel Probes & OpenTelemetry:", "Streams microsecond-level socket latency, page allocations, and context switches directly into Prometheus Golden Signals."),
+        ("🤖 Local SLM Chain-of-Thought (CoT) SRE Synthesizer:", "Executes offline multi-step root cause analysis in sub-millisecond CPU stasis with zero cloud API token costs."),
+        ("🔍 Code Property Graph (CPG) AST Validator:", "Parses remediation scripts against Abstract Syntax Trees to guarantee syntax correctness and measure cyclomatic complexity."),
+        ("🛡️ Multi-Cloud SOAR Actuators (AWS WAFv2 & Puppet Bolt):", "Automates Layer-7 IPSet rate-limiting, Linux kernel nftables isolation, and zero-downtime rolling service draining.")
+    ]
+    for title, desc in v2_innovations:
+        p = tfv2.add_paragraph()
+        p.text = f"• {title} {desc}\n"
+        p.font.size = Pt(13)
+        p.font.color.rgb = TEXT_LIGHT
+
+    # ----------------------------------------------------
     # Slide 12: Conclusion & Q&A
     # ----------------------------------------------------
     s12 = add_blank_slide()

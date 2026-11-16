@@ -59,3 +59,39 @@ class VerificationSandbox:
         }
         return all_passed, report
 
+    def execute_speculative_verification(self, test_script: str, timeout_sec: float = 3.0) -> Dict[str, Any]:
+        """v2.0: Executes custom remediation verification script in an isolated namespace with stdout capture and error trapping."""
+        import io
+        import sys
+        import time
+        import traceback
+
+        start = time.time()
+        captured_out = io.StringIO()
+        old_stdout = sys.stdout
+        sys.stdout = captured_out
+        success = True
+        err_msg = ""
+
+        try:
+            # Compiled in isolated namespace
+            code_obj = compile(test_script, '<speculative_sandbox>', 'exec')
+            exec_globals = {
+                "__builtins__": __builtins__,
+                "time": time
+            }
+            exec(code_obj, exec_globals)
+        except Exception as e:
+            success = False
+            err_msg = f"{type(e).__name__}: {str(e)}"
+        finally:
+            sys.stdout = old_stdout
+
+        duration_ms = round((time.time() - start) * 1000, 2)
+        return {
+            "success": success,
+            "duration_ms": duration_ms,
+            "stdout": captured_out.getvalue().strip(),
+            "stderr": err_msg
+        }
+

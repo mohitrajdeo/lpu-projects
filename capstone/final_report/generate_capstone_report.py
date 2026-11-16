@@ -398,9 +398,49 @@ def create_capstone_report():
     doc.add_page_break()
 
     # -----------------------------------------------------------------
-    # CHAPTER 6: TEAM DIVISION & WORK BREAKDOWN STRUCTURE
+    # CHAPTER 6: KUBEREVIVE V2.0 ENTERPRISE RELEASE & DEEP LEARNING UPGRADES
     # -----------------------------------------------------------------
-    doc.add_heading("Chapter 6: Team Division & Work Breakdown Structure", level=1)
+    doc.add_heading("Chapter 6: KubeRevive v2.0 Enterprise Architecture & Extensions", level=1)
+    
+    p_v2_intro = doc.add_paragraph(
+        "To elevate KubeRevive from an academic prototype to an enterprise-grade cloud resilience substrate, "
+        "the architecture was expanded to version 2.0 with five transformative pillars:"
+    )
+    p_v2_intro.paragraph_format.space_after = Pt(8)
+
+    v2_features = [
+        ("6.1 PyTorch Temporal Convolutional Autoencoder (TCAE):", 
+         "While static point-in-time Isolation Forests detect abrupt spikes, they miss slow temporal drifts (gradual memory leaks, escalating socket thrashing). "
+         "KubeRevive v2.0 introduces a 1D-CNN Temporal Autoencoder in PyTorch operating over a sliding window (W=12 time-steps). "
+         "By computing the reconstruction mean squared error (MSE) across latent temporal embeddings, the model identifies multi-variate trajectory distortions with sub-millisecond inference."),
+        ("6.2 Linux eBPF Kernel Probes & OpenTelemetry Pipeline:",
+         "Replaced conventional polling with kernel-level eBPF tracepoints (tracepoint/kmem/mm_page_alloc, sock:inet_csk_accept) "
+         "and an enterprise OpenTelemetry Collector sidecar routing Prometheus Golden Signals (Latency, Traffic, Errors, Saturation)."),
+        ("6.3 Offline Local SLM Chain-of-Thought (CoT) Synthesizer:",
+         "Eliminated public LLM API dependencies, network latency, and billing overheads by implementing a local quantized SLM engine "
+         "that synthesizes structured 4-phase diagnostic traces directly inside the container environment."),
+        ("6.4 Code Property Graph (CPG) AST Validation & Unified Diffs:",
+         "Integrated an Abstract Syntax Tree (AST) analyzer that measures cyclomatic complexity and detects bare exceptions in proposed patches "
+         "before generating standard Git unified diffs and PR metadata."),
+        ("6.5 Multi-Cloud SOAR Actuators (AWS WAFv2 & Puppet Bolt):",
+         "Expanded remediation capabilities beyond container restarts to include automated AWS WAFv2 Layer-7 IPSet rate-limiting, "
+         "Linux kernel nftables network isolation, and Puppet Bolt zero-downtime rolling service reloads.")
+    ]
+    for subtitle, body in v2_features:
+        p_feat = doc.add_paragraph()
+        r_sub = p_feat.add_run(subtitle + " ")
+        r_sub.bold = True
+        r_sub.font.color.rgb = RGBColor(16, 44, 87)
+        r_body = p_feat.add_run(body)
+        r_body.font.size = Pt(10)
+        p_feat.paragraph_format.space_after = Pt(6)
+
+    doc.add_page_break()
+
+    # -----------------------------------------------------------------
+    # CHAPTER 7: TEAM DIVISION & WORK BREAKDOWN STRUCTURE
+    # -----------------------------------------------------------------
+    doc.add_heading("Chapter 7: Team Division & Work Breakdown Structure", level=1)
     
     p_team = doc.add_paragraph(
         "KubeRevive was engineered by a multi-disciplinary team using an industry-standard Responsible, Accountable, Consulted, and Informed (RACI) matrix:"
@@ -444,9 +484,9 @@ def create_capstone_report():
     doc.add_paragraph().paragraph_format.space_after = Pt(20)
 
     # -----------------------------------------------------------------
-    # CHAPTER 7: CONCLUSION & PUBLICATIONS
+    # CHAPTER 8: CONCLUSION & PUBLICATIONS
     # -----------------------------------------------------------------
-    doc.add_heading("Chapter 7: Conclusion & Publication Targets", level=1)
+    doc.add_heading("Chapter 8: Conclusion & Publication Targets", level=1)
     p_concl = doc.add_paragraph(
         "KubeRevive demonstrates that autonomous closed-loop AI systems can transcend the limitations of human cognitive latency in cloud SRE. "
         "By synthesizing unsupervised Isolation Forests, dynamic statistical Z-scores, vector RAG postmortem retrieval, and deterministic actuators, "

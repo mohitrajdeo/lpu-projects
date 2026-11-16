@@ -33,3 +33,4 @@ scrape_configs:
           environment: 'production'
           service: 'cyber-threat-intelligence'
           owner: 'saif_siddique'
+

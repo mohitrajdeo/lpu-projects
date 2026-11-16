@@ -77,3 +77,4 @@ service:
       receivers: [otlp, prometheus, hostmetrics]
       processors: [memory_limiter, resourcedetection, batch]
       exporters: [prometheus, logging]
+
