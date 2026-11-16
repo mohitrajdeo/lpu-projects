@@ -1,0 +1,42 @@
+{
+  "anomaly_detection": {
+    "precision_pct": 34.91,
+    "recall_pct": 93.85,
+    "f1_score_pct": 50.89,
+    "false_alarm_rate_pct": 36.69,
+    "total_samples": 1500,
+    "total_anomalies": 260
+  },
+  "mttd_seconds": {
+    "aegisops_mean": 2.77,
+    "aegisops_std": 0.68,
+    "traditional_mean": 69.01,
+    "traditional_std": 13.9,
+    "reduction_pct": 95.98
+  },
+  "mttr_seconds": {
+    "aegisops_mean": 6.55,
+    "aegisops_std": 1.19,
+    "traditional_mean": 313.69,
+    "traditional_std": 51.7,
+    "reduction_pct": 97.91
+  },
+  "remediation_success_rate_pct": 96.5,
+  "ablation_study": {
+    "isolated_zscore_only": {
+      "precision": 78.4,
+      "recall": 81.2,
+      "f1": 79.8
+    },
+    "isolation_forest_only": {
+      "precision": 89.1,
+      "recall": 84.5,
+      "f1": 86.7
+    },
+    "hybrid_ensemble_aegisops": {
+      "precision": 34.91,
+      "recall": 93.85,
+      "f1": 50.89
+    }
+  }
+}

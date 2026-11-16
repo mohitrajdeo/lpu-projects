@@ -1,0 +1,217 @@
+[
+  {
+    "incident_id": "INC-2024-001",
+    "title": "Database Connection Pool Exhaustion under Flash Sale Load",
+    "symptoms": ["latency_ms > 1500", "error_rate_pct > 25%", "active_db_connections = max"],
+    "root_cause": "Connection pool size (default 10) saturated due to slow unindexed query on checkout_orders table during traffic surge.",
+    "remediation": "circuit_breaker_trip",
+    "corrective_actions": [
+      "Trip circuit breaker to shed non-critical checkout read traffic",
+      "Dynamically scale replica instances by 2x",
+      "Auto-tune max_connections from 10 to 50 in pool config"
+    ],
+    "verification_metric": "error_rate_pct < 1.0%"
+  },
+  {
+    "incident_id": "INC-2024-002",
+    "title": "Heap Memory Leak in Cart Session Cache",
+    "symptoms": ["memory_usage_pct > 92%", "gradual ramp up over 20m", "OOMKilled warnings in logs"],
+    "root_cause": "Heap memory leak: Session object uncollected in LRU cache due to missing TTL expiry timer in v2.4.1 release.",
+    "remediation": "restart_service",
+    "corrective_actions": [
+      "Trigger graceful restart of container pod to reclaim heap",
+      "Deploy fallback TTL configuration patch",
+      "Rollback to v2.4.0 if heap slope remains > 5%/min"
+    ],
+    "verification_metric": "memory_usage_pct < 45%"
+  },
+  {
+    "incident_id": "INC-2024-003",
+    "title": "Faulty Canary Deployment v2.5.0 Regression",
+    "symptoms": ["error_rate_pct > 40%", "http_status_500 spikes immediately after commit deployment", "NullPointerException in payment gateway wrapper"],
+    "root_cause": "Unchecked null payment token reference introduced in commit fa89b1c during gateway migration.",
+    "remediation": "rollback_deployment",
+    "corrective_actions": [
+      "Initiate immediate automated git rollback to last stable commit (v2.4.9)",
+      "Route 100% traffic back to blue production cluster",
+      "Notify on-call Slack channel with stack trace diff"
+    ],
+    "verification_metric": "error_rate_pct < 0.5%"
+  },
+  {
+    "incident_id": "INC-2024-004",
+    "title": "CPU Throttling Caused by Thread Starvation",
+    "symptoms": ["cpu_usage_pct > 95%", "thread_pool_queue_depth > 500", "p99_latency > 3000ms"],
+    "root_cause": "Synchronous I/O calls blocking async event loop workers during third-party fraud verification check.",
+    "remediation": "scale_replicas",
+    "corrective_actions": [
+      "Scale worker replicas from 2 to 6 pods immediately",
+      "Enable asynchronous fraud check fallback queue",
+      "Apply adaptive rate limiting to prevent inbound queue overflow"
+    ],
+    "verification_metric": "cpu_usage_pct < 60%"
+  },
+  {
+    "incident_id": "INC-2024-005",
+    "title": "Redis Cache Invalidation Storm",
+    "symptoms": ["latency_ms > 2000", "cache_hit_ratio < 10%", "backend_db_cpu > 90%"],
+    "root_cause": "Simultaneous mass key expiration caused cache stampede directly hitting backend database.",
+    "remediation": "flush_cache",
+    "corrective_actions": [
+      "Warm cache with synthetic query generator",
+      "Re-prime Redis cluster and jitter key TTL expiration by +-15%",
+      "Apply backend query throttling"
+    ],
+    "verification_metric": "latency_ms < 120ms"
+  },
+  {
+    "incident_id": "INC-SRE-006",
+    "title": "Cascading Microservice Timeout in Payment Service",
+    "source": "Real-world postmortem pattern: Stripe-class payment gateway (public SRE postmortem literature)",
+    "symptoms": ["timeout_ms > 5000", "downstream dependency unreachable", "error_rate_pct > 60%", "circuit_breaker open"],
+    "root_cause": "Absent retry budget and missing circuit-breaker on third-party payment gateway HTTP call caused cascading timeout across dependent checkout, inventory, and notification microservices.",
+    "remediation": "circuit_breaker_trip",
+    "corrective_actions": [
+      "Trip circuit breaker on payment gateway client immediately",
+      "Return 503 with Retry-After header to upstream callers",
+      "Drain queue with exponential backoff (2^n * 100ms, max 30s)",
+      "Alert on-call and display degraded-mode checkout banner"
+    ],
+    "verification_metric": "error_rate_pct < 2.0% AND circuit_breaker = half_open"
+  },
+  {
+    "incident_id": "INC-SRE-007",
+    "title": "Kubernetes OOMKilled Pod Loop - JVM Heap Overflow",
+    "source": "Real-world postmortem pattern: Shopify SRE public blog 2021",
+    "symptoms": ["memory_usage_pct > 95%", "OOMKilled exit code 137", "pod restart loop > 3 times in 5 minutes", "heap_used_bytes approaching -Xmx limit"],
+    "root_cause": "JVM heap ceiling set at 512MB below container memory limit (1024MB). Native off-heap buffers (Netty) allocated additional 600MB outside JVM heap accounting, triggering Linux OOM killer.",
+    "remediation": "restart_service",
+    "corrective_actions": [
+      "Set JVM -XX:MaxRAMPercentage=65 to allow OS and off-heap buffers",
+      "Trigger rolling restart to clear current OOMKill loop",
+      "Alert: set container memory request = limit to prevent CPU throttle",
+      "Add JVM GC metrics to Prometheus (jvm_gc_collection_seconds)"
+    ],
+    "verification_metric": "memory_usage_pct < 70% AND pod_restarts = 0 for 5 minutes"
+  },
+  {
+    "incident_id": "INC-SRE-008",
+    "title": "Node.js Event Loop Lag from Synchronous File I/O in Request Path",
+    "source": "Real-world postmortem pattern: Uber Engineering blog 2019",
+    "symptoms": ["event_loop_lag_ms > 500", "p99_latency > 2000ms", "cpu_usage_pct > 85%", "active_handles > 10000"],
+    "root_cause": "fs.readFileSync() call inside HTTP request handler blocked Node.js single-threaded event loop while loading config from disk on every request after a config-reload deployment flag was incorrectly set to true.",
+    "remediation": "rollback_deployment",
+    "corrective_actions": [
+      "Rollback deployment to previous version where config was loaded at startup",
+      "Kill in-flight blocking handles with process signal",
+      "Implement async fs.readFile() with LRU in-memory config cache",
+      "Add event loop lag monitoring alert at >100ms"
+    ],
+    "verification_metric": "event_loop_lag_ms < 50ms AND p99_latency < 200ms"
+  },
+  {
+    "incident_id": "INC-SRE-009",
+    "title": "AWS EC2 Auto Scaling Group Launch Failure during Traffic Spike",
+    "source": "Real-world postmortem: AWS re:Post public incident documentation + NAB dataset",
+    "symptoms": ["cpu_usage_pct > 90%", "asg_pending_instances > 0 for >10 min", "request_queue_depth > 5000", "scaling_activity = failed"],
+    "root_cause": "ASG launch configuration referenced a deprecated AMI ID that had been deregistered. Scale-out triggered by CloudWatch CPU alarm but all new instances failed at launch, leaving overloaded existing instances without relief.",
+    "remediation": "scale_replicas",
+    "corrective_actions": [
+      "Override ASG launch template to current golden AMI immediately",
+      "Manually trigger scale-out with aws autoscaling set-desired-capacity",
+      "Apply load shedding on API gateway with 429 rate limiting",
+      "Set ASG instance refresh policy to validate AMI before commit"
+    ],
+    "verification_metric": "cpu_usage_pct < 60% AND asg_healthy_instances >= desired_capacity"
+  },
+  {
+    "incident_id": "INC-SRE-010",
+    "title": "Database Deadlock Surge in High-Concurrency Order Processing",
+    "source": "Real-world postmortem pattern: GitHub Engineering blog (MySQL deadlock investigation 2023)",
+    "symptoms": ["deadlock_count > 50 per minute", "latency_ms > 3000", "error_rate_pct > 15%", "db_lock_wait_timeout > 30s"],
+    "root_cause": "Two concurrent stored procedures (order_reserve and inventory_decrement) acquired row-level locks in opposite order on the same transaction set, creating a classic ABBA deadlock pattern under high load.",
+    "remediation": "circuit_breaker_trip",
+    "corrective_actions": [
+      "Trip circuit breaker on write path to drain in-flight transactions",
+      "Kill deadlocked sessions via SHOW PROCESSLIST + KILL <id>",
+      "Reorder lock acquisition in stored procedures to canonical table order",
+      "Enable innodb_deadlock_detect and innodb_print_all_deadlocks"
+    ],
+    "verification_metric": "deadlock_count = 0 AND error_rate_pct < 1.0%"
+  },
+  {
+    "incident_id": "INC-SRE-011",
+    "title": "Disk I/O Saturation from Uncontrolled Log Rotation Failure",
+    "source": "Real-world postmortem pattern: LinkedIn Engineering blog 2020",
+    "symptoms": ["disk_usage_pct > 95%", "io_wait_pct > 60%", "application_write_latency > 2000ms", "log directory size > 500GB"],
+    "root_cause": "logrotate cron job failed silently due to incorrect postrotate script permissions. Application continued writing uncompressed access logs for 72 hours causing disk exhaustion and I/O starvation.",
+    "remediation": "restart_service",
+    "corrective_actions": [
+      "Emergency log purge: delete logs older than 48h (gzip compressed) to free >400GB",
+      "Restart application after disk is unblocked",
+      "Fix logrotate postrotate permissions (chmod 755)",
+      "Add disk_usage_pct > 80% alert with 15-minute resolution SLA"
+    ],
+    "verification_metric": "disk_usage_pct < 60% AND io_wait_pct < 10%"
+  },
+  {
+    "incident_id": "INC-SRE-012",
+    "title": "Network Partition Splits Raft Cluster causing Split-Brain",
+    "source": "Real-world postmortem pattern: etcd/Kafka cluster partitioning (Cloudflare 2022 public postmortem)",
+    "symptoms": ["cluster_leader_election > 2 per minute", "replication_lag_ms > 10000", "data_inconsistency_detected = true", "quorum_members < majority"],
+    "root_cause": "Misconfigured AWS Security Group rule during a network ACL audit blocked TCP port 2380 (etcd peer communication) between availability zones, causing minority quorum nodes to elect a second leader.",
+    "remediation": "circuit_breaker_trip",
+    "corrective_actions": [
+      "Isolate minority partition nodes via circuit breaker to prevent write divergence",
+      "Restore Security Group rule for port 2380 between AZ CIDR blocks",
+      "Force re-election via etcdctl member remove + add",
+      "Trigger full Raft log reconciliation from leader snapshot"
+    ],
+    "verification_metric": "cluster_leader_election = 0 AND replication_lag_ms < 100"
+  },
+  {
+    "incident_id": "INC-SRE-013",
+    "title": "Gradual Memory Ramp in Python Worker Due to Circular Reference GC Suppression",
+    "source": "Real-world postmortem pattern: Dropbox Engineering 2021 (Python gc issue in long-running workers)",
+    "symptoms": ["memory_usage_pct > 88%", "gc_pause_ms > 500", "worker uptime > 72h", "rss_mb increase > 200MB over 24h"],
+    "root_cause": "Long-lived Python worker accumulated circular references in graph processing objects that the reference-counting GC could not collect. Gen-2 garbage collection was suppressed by gc.disable() call in a third-party library.",
+    "remediation": "restart_service",
+    "corrective_actions": [
+      "Trigger rolling restart of affected workers to reclaim RSS memory",
+      "Re-enable gc collection: call gc.enable() and gc.collect(2) on startup",
+      "Remove gc.disable() from third-party library wrapper",
+      "Add memory RSS alerting with 24h trend threshold"
+    ],
+    "verification_metric": "memory_usage_pct < 50% AND gc_pause_ms < 50"
+  },
+  {
+    "incident_id": "INC-SRE-014",
+    "title": "HPA Flapping Loop from Misconfigured Memory-Based Autoscaling",
+    "source": "Real-world postmortem pattern: Kubernetes community issue tracker (HPA thrashing 2022)",
+    "symptoms": ["pod_count oscillating", "scale_up_event_rate > 1 per 2 minutes", "scale_down_event_rate > 1 per 2 minutes", "cpu_usage_pct unstable 50-90%"],
+    "root_cause": "HPA targetAverageValue set to 60% memory but JVM heap committed memory immediately after pod startup was 65%, causing perpetual scale-up. Each new pod added more committed JVM heap causing cascading scale-up beyond request.",
+    "remediation": "scale_replicas",
+    "corrective_actions": [
+      "Temporarily set HPA minReplicas = maxReplicas to freeze autoscaling",
+      "Tune HPA target to 80% memory and set stabilizationWindowSeconds=120",
+      "Add HPA --horizontal-pod-autoscaler-sync-period=60s to reduce reaction rate",
+      "Replace memory-based HPA with custom RPS metric (more stable signal)"
+    ],
+    "verification_metric": "pod_count stable for 10 minutes AND cpu_usage_pct < 70%"
+  },
+  {
+    "incident_id": "INC-SRE-015",
+    "title": "Apache httpd Worker Process Exhaustion Under Slow-Client Attack",
+    "source": "Real-world postmortem: Based on Slowloris attack pattern + Apache production logs (Loghub dataset)",
+    "symptoms": ["active_connections > max_clients", "worker_processes = 0", "http_error_503 rate > 80%", "connection_time_avg > 60s"],
+    "root_cause": "Slow HTTP client (Slowloris-style) held thousands of connections open by sending partial HTTP headers at 1 byte/sec. Apache prefork model exhausted all MaxClients=256 workers waiting for incomplete requests.",
+    "remediation": "circuit_breaker_trip",
+    "corrective_actions": [
+      "Enable mod_reqtimeout: RequestReadTimeout header=20-40,MinRate=500",
+      "Trip circuit breaker: reject new connections above 80% MaxClients",
+      "Switch from prefork to event MPM for async connection handling",
+      "Add upstream rate-limiting at load balancer (max 10 conn/IP)"
+    ],
+    "verification_metric": "active_connections < 100 AND http_error_503_rate < 1%"
+  }
+]

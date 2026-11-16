@@ -1,0 +1,49 @@
+# KubeRevive Configuration File
+system:
+  name: "KubeRevive-Autonomous-AIOps-Framework"
+  version: "1.0.0"
+  environment: "development"
+  log_level: "INFO"
+  host: "0.0.0.0"
+  port: 8000
+
+anomaly_detection:
+  window_size: 30
+  z_score_threshold: 2.75
+  isolation_forest:
+    contamination: 0.05
+    n_estimators: 100
+    random_state: 42
+  metrics_monitored:
+    - "cpu_usage_pct"
+    - "memory_usage_pct"
+    - "latency_ms"
+    - "error_rate_pct"
+    - "request_rate_rps"
+
+llm_agents:
+  mock_mode: true  # True enables deterministic offline LLM inference for viva/offline demo; False uses API key
+  model: "gemini-1.5-pro"
+  temperature: 0.1
+  confidence_threshold: 0.80
+  knowledge_base_path: "data/incident_knowledge_base.json"
+
+actuators:
+  dry_run: false
+  allowed_actions:
+    - "restart_service"
+    - "rollback_deployment"
+    - "scale_replicas"
+    - "circuit_breaker_trip"
+    - "flush_cache"
+  cooldown_seconds: 15
+  auto_remediation_enabled: true
+
+chaos_simulator:
+  scenarios:
+    - "cpu_spike"
+    - "memory_leak"
+    - "latency_burst"
+    - "http_500_storm"
+    - "bad_deployment"
+

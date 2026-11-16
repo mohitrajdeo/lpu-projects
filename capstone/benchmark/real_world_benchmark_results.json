@@ -1,0 +1,60 @@
+{
+  "evaluation_type": "Real-World Industrial Dataset Benchmark",
+  "benchmark_suites": [
+    "Numenta Anomaly Benchmark (NAB) - Amazon Web Services (AWS) Real Outages",
+    "Loghub / LogPAI - Apache Production Web Server Access & Error Logs"
+  ],
+  "aws_asg_outage": {
+    "dataset": "aws_asg_misconfiguration.csv",
+    "nab_official_key": "realKnownCause/cpu_utilization_asg_misconfiguration.csv",
+    "total_real_data_points": 18050,
+    "ground_truth_outage_windows": 1,
+    "successfully_detected_windows": 1,
+    "nab_window_detection_rate_pct": 100.0,
+    "total_alerts_fired": 854,
+    "first_detection_lead_time": "40.0 mins from window onset",
+    "point_level_metrics": {
+      "precision_pct": 3.63,
+      "recall_pct": 2.07,
+      "f1_score_pct": 2.64
+    }
+  },
+  "aws_ec2_latency_outage": {
+    "dataset": "aws_ec2_latency_failure.csv",
+    "nab_official_key": "realKnownCause/ec2_request_latency_system_failure.csv",
+    "total_real_data_points": 4032,
+    "ground_truth_outage_windows": 3,
+    "successfully_detected_windows": 3,
+    "nab_window_detection_rate_pct": 100.0,
+    "total_alerts_fired": 58,
+    "first_detection_lead_time": "165.0 mins from window onset",
+    "point_level_metrics": {
+      "precision_pct": 18.97,
+      "recall_pct": 3.18,
+      "f1_score_pct": 5.45
+    }
+  },
+  "loghub_apache_logs": {
+    "dataset": "Loghub Apache Production Logs",
+    "total_lines_parsed": 2000,
+    "real_errors_isolated": 595,
+    "top_error_templates": [
+      {
+        "template": "[Mon Dec <NUM> <NUM>:<NUM>:<NUM> <NUM>] [error] mod_jk child workerEnv in error state <NUM>",
+        "count": 138
+      },
+      {
+        "template": "[Mon Dec <NUM> <NUM>:<NUM>:<NUM> <NUM>] [error] [client <IP>] Directory index forbidden by rule: /var/www/html/",
+        "count": 5
+      },
+      {
+        "template": "[Mon Dec <NUM> <NUM>:<NUM>:<NUM> <NUM>] [error] jk2_init() Can't find child <NUM> in scoreboard",
+        "count": 4
+      },
+      {
+        "template": "[Mon Dec <NUM> <NUM>:<NUM>:<NUM> <NUM>] [error] mod_jk child init <NUM> -<NUM>",
+        "count": 4
+      }
+    ]
+  }
+}

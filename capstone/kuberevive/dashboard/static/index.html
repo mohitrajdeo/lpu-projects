@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KubeRevive | Autonomous Multi-Agent AIOps Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="h-9 w-9 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-500/30">
+                🛡️
+            </div>
+            <div>
+                <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center space-x-2">
+                    <span>KubeRevive</span>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded bg-indigo-900/80 text-indigo-300 border border-indigo-700/50">v1.0.0 AIOps</span>
+                </h1>
+                <p class="text-xs text-slate-400">Autonomous Multi-Agent Incident Remediation & Self-Healing Pipeline</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 text-xs">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-slate-300 font-medium">Cluster: Active</span>
+            </div>
+            <button id="toggleRemediationBtn" onclick="toggleRemediation()" class="px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow">
+                Autonomous Healing: ON
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-6">
+
+        <!-- Top Overview Metric Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-medium mb-1">
+                    <span>CPU LOAD</span>
+                    <span class="text-emerald-400" id="cpuBadge">Normal</span>
+                </div>
+                <div class="text-2xl font-bold mono" id="cpuValue">-- %</div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div id="cpuBar" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 25%"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-medium mb-1">
+                    <span>MEMORY UTILIZATION</span>
+                    <span class="text-emerald-400" id="memBadge">Normal</span>
+                </div>
+                <div class="text-2xl font-bold mono" id="memValue">-- %</div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div id="memBar" class="bg-cyan-500 h-full rounded-full transition-all duration-500" style="width: 35%"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-medium mb-1">
+                    <span>P99 LATENCY</span>
+                    <span class="text-emerald-400" id="latBadge">Optimal</span>
+                </div>
+                <div class="text-2xl font-bold mono" id="latValue">-- ms</div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div id="latBar" class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 15%"></div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow">
+                <div class="flex justify-between items-center text-xs text-slate-400 font-medium mb-1">
+                    <span>ERROR RATE</span>
+                    <span class="text-emerald-400" id="errBadge">Healthy</span>
+                </div>
+                <div class="text-2xl font-bold mono" id="errValue">-- %</div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full mt-3 overflow-hidden">
+                    <div id="errBar" class="bg-rose-500 h-full rounded-full transition-all duration-500" style="width: 1%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Telemetry Chart & Chaos Injection Panel -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Telemetry Chart (2 cols) -->
+            <div class="lg:col-span-2 bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                        <span>📈 Live Telemetry Stream</span>
+                    </h2>
+                    <span class="text-xs text-slate-400 mono">Polling: 1000ms</span>
+                </div>
+                <div class="flex-1 min-h-[260px] relative">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chaos Engineering Injection Station (1 col) -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow flex flex-col justify-between">
+                <div>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center space-x-2">
+                        <span>⚡ Chaos Fault Injector</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mb-4">Simulate enterprise outages to trigger ML anomaly detection and multi-agent auto-remediation:</p>
+                    
+                    <div class="space-y-2">
+                        <button onclick="triggerChaos('cpu_spike')" class="w-full flex items-center justify-between px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
+                            <span>🔥 CPU Thread Saturation</span>
+                            <span class="mono text-[10px] text-slate-400">Scale Pods</span>
+                        </button>
+                        <button onclick="triggerChaos('memory_leak')" class="w-full flex items-center justify-between px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
+                            <span>💧 Unbounded Memory Leak</span>
+                            <span class="mono text-[10px] text-slate-400">Restart Pod</span>
+                        </button>
+                        <button onclick="triggerChaos('http_500_storm')" class="w-full flex items-center justify-between px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
+                            <span>💥 HTTP 500 Regression Storm</span>
+                            <span class="mono text-[10px] text-slate-400">Canary Rollback</span>
+                        </button>
+                        <button onclick="triggerChaos('latency_burst')" class="w-full flex items-center justify-between px-3 py-2 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
+                            <span>⏳ Dependency Latency Surge</span>
+                            <span class="mono text-[10px] text-slate-400">Circuit Breaker</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800">
+                    <button onclick="stopChaos()" class="w-full py-2 rounded bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold transition">
+                        🛑 Halt Active Chaos / Stabilize
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-Time Agent Incident Triage, RCA & Remediation Timeline -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Active Incidents & Remediation Timeline -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center space-x-2">
+                    <span>🛠️ Autonomous Remediation Timeline</span>
+                </h2>
+                <div id="remediationTimeline" class="space-y-2.5 max-h-[220px] overflow-y-auto text-xs mono">
+                    <div class="p-3 bg-slate-800/50 rounded border border-slate-700 text-slate-400">
+                        No active remediation triggered. System operating normally.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Reasoning & Audit Event Stream -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-5 shadow">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3 flex items-center space-x-2">
+                    <span>🧠 Multi-Agent Diagnostics Stream</span>
+                </h2>
+                <div id="agentLogStream" class="p-3 bg-slate-950 rounded-lg border border-slate-800 font-mono text-[11px] leading-relaxed max-h-[220px] overflow-y-auto space-y-1 text-slate-300">
+                    <div>[SYSTEM] KubeRevive Multi-Agent Loop initialized. Monitoring checkout-service.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6-Person Capstone Team Work Breakdown Banner -->
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-xl p-5 mt-6">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">🎓 Capstone Project Team Work Allocation (6 Members)</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 1</p>
+                    <p class="text-slate-200 font-semibold">Lead Architect</p>
+                    <p class="text-[10px] text-slate-400">FastAPI, Telemetry Orchestrator, Core API</p>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 2</p>
+                    <p class="text-slate-200 font-semibold">AI/ML Engineer</p>
+                    <p class="text-[10px] text-slate-400">Isolation Forest, Rolling Z-Score, Log Parser</p>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 3</p>
+                    <p class="text-slate-200 font-semibold">Agentic LLM Lead</p>
+                    <p class="text-[10px] text-slate-400">RAG Incident KB, RCA Reasoning, Patch Planner</p>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 4</p>
+                    <p class="text-slate-200 font-semibold">DevOps Specialist</p>
+                    <p class="text-[10px] text-slate-400">Docker, Prometheus, Auto-Healing Actuators</p>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 5</p>
+                    <p class="text-slate-200 font-semibold">Chaos & QA Lead</p>
+                    <p class="text-[10px] text-slate-400">Chaos Injector, CI/CD Workflows, Test Suite</p>
+                </div>
+                <div class="bg-slate-800/50 p-2.5 rounded border border-slate-700/60">
+                    <p class="font-bold text-indigo-400">Member 6</p>
+                    <p class="text-slate-200 font-semibold">Research & PPT Lead</p>
+                    <p class="text-[10px] text-slate-400">MTTD/MTTR Benchmarking, IEEE Paper, PPT</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 py-4 px-6 text-center text-xs text-slate-500">
+        KubeRevive Capstone Project & IEEE Research Publication Suite | Ready for Conference Defense
+    </footer>
+
+    <!-- App Logic Script -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
+

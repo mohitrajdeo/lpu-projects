@@ -129,3 +129,4 @@ All 6 project packages are built with **0% npm bloat** and located in [`6_PROJEC
 ### Reports & Synopses
 * All final reports are provided in 3 formats: Word `.docx` (14–16 pages), Official `.pdf`, and Print-Ready `.html`.
 * Synopses are included in each student's DevOps folder and mirrored on the Master Operations Center.
+
