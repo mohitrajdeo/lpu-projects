@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List, Dict, Any, Optional
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -11,6 +12,7 @@ import uvicorn
 # Setup module path
 sys.path.insert(0, os.path.dirname(__file__))
 from swe_agents import AutonomousSWESystem
+from v2_cpg_engine import CodePropertyGraphAnalyzer, SpeculativeSandboxRunner, AutonomousPRGenerator
 
 app = FastAPI(title="Akash Autonomous SWE Platform Microservice v2.0", version="2.0.0")
 
@@ -24,6 +26,7 @@ app.add_middleware(
 
 model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'models', 'code_defect_classifier.pkl'))
 swe_engine = AutonomousSWESystem(model_path)
+cpg_analyzer = CodePropertyGraphAnalyzer()
 
 def to_safe_json(obj):
     if isinstance(obj, dict):
@@ -75,6 +78,53 @@ async def generate_and_audit_code(req: SWEGenerateRequest):
             "code_data": code_data,
             "defect_audit": audit,
             "test_results": test_res
+        }))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class CPGAnalysisRequest(BaseModel):
+    code: str
+    filename: Optional[str] = "service.py"
+
+class SpeculativeVerifyRequest(BaseModel):
+    code: str
+    assertions: Optional[List[str]] = None
+    original_code: Optional[str] = None
+    task_description: Optional[str] = "Refactor and optimize algorithm"
+
+@app.post("/api/v2/swe/cpg-analysis")
+async def analyze_cpg(req: CPGAnalysisRequest):
+    try:
+        analysis = cpg_analyzer.analyze_source(req.code)
+        return JSONResponse(content=to_safe_json({
+            "status": "SUCCESS",
+            "version": "2.0.0",
+            "cpg_analysis": analysis
+        }))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v2/swe/speculative-verify")
+async def speculative_verify_and_diff(req: SpeculativeVerifyRequest):
+    try:
+        cpg_info = cpg_analyzer.analyze_source(req.code)
+        sandbox_res = SpeculativeSandboxRunner.execute_speculative_verification(req.code, req.assertions)
+        
+        diff_str = ""
+        if req.original_code:
+            diff_str = AutonomousPRGenerator.generate_unified_diff(req.original_code, req.code)
+            
+        pr_meta = AutonomousPRGenerator.generate_pr_metadata(
+            req.task_description, cpg_info, sandbox_res
+        )
+
+        return JSONResponse(content=to_safe_json({
+            "status": "SUCCESS",
+            "version": "2.0.0",
+            "cpg_metrics": cpg_info,
+            "speculative_sandbox": sandbox_res,
+            "unified_diff": diff_str,
+            "pull_request_metadata": pr_meta
         }))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

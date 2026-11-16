@@ -1,0 +1,35 @@
+# Prometheus Modern Observability Configuration v2.0
+# Scrapes Golden Signals: Latency, Traffic, Errors, Saturation
+# Author: Mohit Raj Deo (12323329 | Roll: 62)
+
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: 'mohit_aiops_cluster'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['localhost:5001']
+        labels:
+          environment: 'production'
+          service: 'aiops-cloud-intelligence'
+          owner: 'mohit_raj_deo'
+
+  - job_name: 'akash_swe_cluster'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['localhost:5002']
+        labels:
+          environment: 'production'
+          service: 'autonomous-swe'
+          owner: 'akash_choudhary'
+
+  - job_name: 'saif_secops_cluster'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['localhost:5003']
+        labels:
+          environment: 'production'
+          service: 'cyber-threat-intelligence'
+          owner: 'saif_siddique'

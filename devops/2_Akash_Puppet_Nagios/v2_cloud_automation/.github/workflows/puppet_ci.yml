@@ -1,0 +1,32 @@
+name: Puppet Module Quality & Syntax CI
+
+on:
+  push:
+    branches: [ main, v2.0 ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Install Lint & Validation Tools
+        run: |
+          gem install puppet-lint
+          gem install puppet
+
+      - name: Run Puppet Syntax Check
+        run: |
+          find . -name "*.pp" -exec puppet parser validate {} +
+
+      - name: Run Puppet Lint
+        run: |
+          puppet-lint --fail-on-warnings --no-autoloader_layout-check .

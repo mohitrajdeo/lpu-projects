@@ -1,0 +1,79 @@
+# OpenTelemetry Collector Enterprise Pipeline v2.0
+# INT333 DevOps Advance Configuration Management
+# Modernizes legacy Nagios NRPE pollers into real-time OpenTelemetry push/pull ingestion
+# Author: Mohit Raj Deo (12323329 | Roll: 62)
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'aiops-microservice-5001'
+          scrape_interval: 5s
+          static_configs:
+            - targets: ['localhost:5001']
+        - job_name: 'swe-microservice-5002'
+          scrape_interval: 5s
+          static_configs:
+            - targets: ['localhost:5002']
+        - job_name: 'secops-microservice-5003'
+          scrape_interval: 5s
+          static_configs:
+            - targets: ['localhost:5003']
+        - job_name: 'node-exporter'
+          scrape_interval: 10s
+          static_configs:
+            - targets: ['localhost:9100']
+
+  hostmetrics:
+    collection_interval: 10s
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      filesystem:
+      network:
+      load:
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 75
+    spike_limit_percentage: 20
+
+  resourcedetection:
+    detectors: [env, system]
+    timeout: 2s
+    override: false
+
+exporters:
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: "aiops"
+
+  logging:
+    loglevel: info
+
+extensions:
+  health_check:
+    endpoint: 0.0.0.0:13133
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+service:
+  extensions: [health_check, zpages]
+  pipelines:
+    metrics:
+      receivers: [otlp, prometheus, hostmetrics]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [prometheus, logging]

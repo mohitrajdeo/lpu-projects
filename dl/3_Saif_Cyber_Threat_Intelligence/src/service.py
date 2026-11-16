@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List, Dict, Any, Optional
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -11,6 +12,7 @@ import uvicorn
 # Setup module path
 sys.path.insert(0, os.path.dirname(__file__))
 from secops_agent import AutonomousSecOpsSOC
+from v2_threat_graph_engine import SemanticLogAnalyzer, ThreatAttackGraphNavigator, AutomatedSOARPlaybook
 
 app = FastAPI(title="Saif Autonomous SOC Threat Hunter Microservice v2.0", version="2.0.0")
 
@@ -24,6 +26,7 @@ app.add_middleware(
 
 model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'models', 'intrusion_detection_model.pkl'))
 secops_engine = AutonomousSecOpsSOC(model_path)
+semantic_log_analyzer = SemanticLogAnalyzer()
 
 def to_safe_json(obj):
     if isinstance(obj, dict):
@@ -82,6 +85,46 @@ async def triage_cyber_threat(req: SecOpsTriageRequest):
             "threat_intelligence": intel,
             "quarantine": quarantine,
             "cti_brief": brief
+        }))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+class LogThreatAnalysisRequest(BaseModel):
+    log_text: str
+    attacker_ip: Optional[str] = "198.51.100.42"
+
+class SOARContainmentRequest(BaseModel):
+    attacker_ip: str
+    attack_type: Optional[str] = "SQLI"
+
+@app.post("/api/v2/secops/threat-graph")
+async def analyze_threat_graph(req: LogThreatAnalysisRequest):
+    try:
+        log_res = semantic_log_analyzer.analyze_log_entry(req.log_text)
+        graph_res = ThreatAttackGraphNavigator.traverse_attack_path(log_res.get("matched_signatures", []))
+        soar_res = AutomatedSOARPlaybook.synthesize_containment(
+            req.attacker_ip,
+            log_res.get("matched_signatures", ["ANOMALY"])[0] if log_res.get("matched_signatures") else "ANOMALY"
+        )
+        return JSONResponse(content=to_safe_json({
+            "status": "SUCCESS",
+            "version": "2.0.0",
+            "semantic_log_analysis": log_res,
+            "mitre_attack_graph": graph_res,
+            "automated_soar_playbook": soar_res
+        }))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v2/secops/soar-quarantine")
+async def dispatch_soar_quarantine(req: SOARContainmentRequest):
+    try:
+        playbook = AutomatedSOARPlaybook.synthesize_containment(req.attacker_ip, req.attack_type)
+        return JSONResponse(content=to_safe_json({
+            "status": "SUCCESS",
+            "version": "2.0.0",
+            "dispatch_status": "ENFORCED",
+            "playbook": playbook
         }))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

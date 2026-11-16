@@ -1,0 +1,29 @@
+# Puppet Hiera v5 Configuration with HashiCorp Vault Backend v2.0
+# Author: Akash Choudhary (12301625 | Roll: 11)
+
+version: 5
+defaults:
+  datadir: data
+  data_hash: yaml_data
+
+hierarchy:
+  - name: "HashiCorp Vault Dynamic Secrets"
+    lookup_key: hiera_vault
+    options:
+      ssl_verify: true
+      address: "https://vault.internal.theeducode.com:8200"
+      auth_method: token
+      token_file: "/etc/puppetlabs/puppet/vault_token"
+      mounts:
+        generic:
+          - "secret/production/database"
+          - "secret/production/tls_certificates"
+
+  - name: "Per-Node Customizations"
+    path: "nodes/%{trusted.certname}.yaml"
+
+  - name: "Environment Level Defaults"
+    path: "environments/%{server_facts.environment}.yaml"
+
+  - name: "Global Common Configuration"
+    path: "common.yaml"

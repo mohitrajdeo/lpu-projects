@@ -1,0 +1,91 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "AIOps Golden Signals Overview (v2.0 Architecture)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prom-default" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 1 },
+      "id": 2,
+      "title": "AIOps Service Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "aiops_service_up",
+          "legendFormat": "Status"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prom-default" },
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 1 },
+      "id": 3,
+      "title": "SWE Service Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "swe_service_up",
+          "legendFormat": "Status"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prom-default" },
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 1 },
+      "id": 4,
+      "title": "SecOps Service Status",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "secops_service_up",
+          "legendFormat": "Status"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prom-default" },
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 1 },
+      "id": 5,
+      "title": "ML Model Health",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "aiops_model_loaded + swe_model_loaded + secops_model_loaded",
+          "legendFormat": "Loaded Models"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["aiops", "sre", "devops-v2"],
+  "time": { "from": "now-15m", "to": "now" },
+  "title": "AIOps Modern Observability Dashboard v2.0",
+  "version": 1
+}

@@ -1,5 +1,6 @@
 import os
 import sys
+from typing import List, Dict, Any
 import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -11,6 +12,7 @@ import uvicorn
 # Setup module path
 sys.path.insert(0, os.path.dirname(__file__))
 from aiops_agent import AIOpsMultiAgentSystem
+from v2_temporal_engine import AIOpsTemporalEngineV2
 
 app = FastAPI(title="Mohit AIOps Cloud Intelligence Microservice v2.0", version="2.0.0")
 
@@ -24,6 +26,7 @@ app.add_middleware(
 
 model_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'models', 'telemetry_anomaly_detector.pkl'))
 aiops_engine = AIOpsMultiAgentSystem(model_path)
+temporal_engine_v2 = AIOpsTemporalEngineV2()
 
 def to_safe_json(obj):
     if isinstance(obj, dict):
@@ -82,6 +85,32 @@ async def process_telemetry(req: TelemetryRequest):
         }))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class TemporalWindowRequest(BaseModel):
+    window: List[TelemetryRequest]
+    scenario: str = "normal"
+
+@app.post("/api/v2/telemetry/temporal-anomaly")
+async def evaluate_temporal_v2(req: TemporalWindowRequest):
+    try:
+        dict_window = [pt.dict() for pt in req.window]
+        anomaly_res = temporal_engine_v2.evaluate_temporal_window(dict_window)
+        ebpf_res = temporal_engine_v2.simulate_ebpf_stream(req.scenario)
+        slm_res = temporal_engine_v2.generate_slm_rca(anomaly_res, ebpf_res)
+        return JSONResponse(content=to_safe_json({
+            "status": "SUCCESS",
+            "version": "2.0.0",
+            "temporal_anomaly_detection": anomaly_res,
+            "ebpf_kernel_probe": ebpf_res,
+            "slm_chain_of_thought_rca": slm_res
+        }))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v2/telemetry/ebpf-stream")
+async def get_ebpf_stream(scenario: str = "normal"):
+    stream = temporal_engine_v2.simulate_ebpf_stream(scenario)
+    return JSONResponse(content=to_safe_json(stream))
 
 # Mount React UI production distribution
 ui_dist_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'ui', 'dist'))

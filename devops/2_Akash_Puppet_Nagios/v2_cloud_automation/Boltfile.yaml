@@ -1,0 +1,23 @@
+# Puppet Bolt Orchestration Configuration v2.0
+# Enables push-based emergency rollouts & hotfixing across fleet
+# Author: Akash Choudhary (12301625 | Roll: 11)
+
+name: akash_bolt_orchestrator
+modules:
+  - name: puppetlabs-stdlib
+    version_requirement: '>= 8.0.0'
+  - name: puppetlabs-apt
+    version_requirement: '>= 8.0.0'
+
+inventory:
+  targets:
+    - uri: 'web-prod-01.theeducode.com'
+      name: 'node1'
+    - uri: 'web-prod-02.theeducode.com'
+      name: 'node2'
+  config:
+    transport: ssh
+    ssh:
+      user: 'ubuntu'
+      private-key: '~/.ssh/id_ed25519'
+      host-key-check: false
