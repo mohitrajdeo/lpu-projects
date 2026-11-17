@@ -1,0 +1,50 @@
+{
+  "15": {
+    "kb_size": 15,
+    "mean_latency_ms": 0.07,
+    "std_latency_ms": 0.01,
+    "p99_latency_ms": 0.13,
+    "matched_id": "INC-SRE-010",
+    "top_similarity": 0.25
+  },
+  "100": {
+    "kb_size": 100,
+    "mean_latency_ms": 0.39,
+    "std_latency_ms": 0.11,
+    "p99_latency_ms": 0.79,
+    "matched_id": "INC-SCALE-0016",
+    "top_similarity": 0.8
+  },
+  "500": {
+    "kb_size": 500,
+    "mean_latency_ms": 2.01,
+    "std_latency_ms": 0.47,
+    "p99_latency_ms": 3.56,
+    "matched_id": "INC-SCALE-0016",
+    "top_similarity": 0.8
+  },
+  "1000": {
+    "kb_size": 1000,
+    "mean_latency_ms": 4.15,
+    "std_latency_ms": 0.89,
+    "p99_latency_ms": 6.66,
+    "matched_id": "INC-SCALE-0016",
+    "top_similarity": 0.8
+  },
+  "2500": {
+    "kb_size": 2500,
+    "mean_latency_ms": 10.45,
+    "std_latency_ms": 2.32,
+    "p99_latency_ms": 18.87,
+    "matched_id": "INC-SCALE-0016",
+    "top_similarity": 0.8
+  },
+  "5000": {
+    "kb_size": 5000,
+    "mean_latency_ms": 21.4,
+    "std_latency_ms": 4.01,
+    "p99_latency_ms": 34.84,
+    "matched_id": "INC-SCALE-0016",
+    "top_similarity": 0.8
+  }
+}
