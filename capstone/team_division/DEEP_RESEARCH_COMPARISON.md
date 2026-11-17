@@ -53,15 +53,15 @@ Over the last 5 years, research into automated cloud reliability has split into 
 
 ### Gap 1: The "Open-Loop" Diagnostic Dead-End
 - **The Problem:** Modern LLM systems like **Microsoft RCACopilot** and **Tsinghua's D-Bot** generate excellent explanations of why an incident occurred, but they stop at diagnosis. When a database deadlock or memory leak strikes at 3:00 AM, an open-loop copilot only generates a notification. The mean time to recover (MTTR) remains bounded by the human engineer's response time (25–45 minutes).
-- **The KubeRevive Solution:** We bridge diagnosis to **deterministic, closed-loop actuation**. In [remediation_engine.py](file:///c:/MOHIT/capstone/kuberevive/actuators/remediation_engine.py), the diagnosis directly triggers an atomic, policy-constrained actuator (canary rollback, horizontal pod autoscaling, or rolling memory recycling) that executes in under 500 milliseconds.
+- **The KubeRevive Solution:** We bridge diagnosis to **deterministic, closed-loop actuation**. In [remediation_engine.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/actuators/remediation_engine.py), the diagnosis directly triggers an atomic, policy-constrained actuator (canary rollback, horizontal pod autoscaling, or rolling memory recycling) that executes in under 500 milliseconds.
 
 ### Gap 2: The "Actuator Thrashing & Thundering Herd" Catastrophe
 - **The Problem:** When naive autonomous systems attempt automated remediation (e.g., executing a pod restart script whenever memory exceeds 85%), they trigger **actuator flapping**. If a service takes 5 seconds to warm its Redis cache or establish database connection pools, a naive controller restarts it again and again, destroying healthy traffic and causing cascading cluster collapse.
-- **The KubeRevive Solution:** In [triage_agent.py](file:///c:/MOHIT/capstone/kuberevive/agents/triage_agent.py) and [remediation_engine.py](file:///c:/MOHIT/capstone/kuberevive/actuators/remediation_engine.py), we enforced a stateful **15-second debounce and cooldown barrier**. Once an actuator executes, subsequent triggers on that microservice are quarantined until the cooldown window elapses and our [verification_sandbox.py](file:///c:/MOHIT/capstone/kuberevive/actuators/verification_sandbox.py) confirms whether health probes have stabilized.
+- **The KubeRevive Solution:** In [triage_agent.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/agents/triage_agent.py) and [remediation_engine.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/actuators/remediation_engine.py), we enforced a stateful **15-second debounce and cooldown barrier**. Once an actuator executes, subsequent triggers on that microservice are quarantined until the cooldown window elapses and our [verification_sandbox.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/actuators/verification_sandbox.py) confirms whether health probes have stabilized.
 
 ### Gap 3: The Heavy Deep-Learning GPU Trap
 - **The Problem:** Pioneer frameworks like **DeepLog** (ACM CCS) and modern Transformer log parsers require continuous GPU availability for sequence modeling. In real-world edge nodes and microservice sidecars, allocating a dedicated GPU for observability is economically unfeasible. Furthermore, whenever software developers deploy new code with modified log strings, deep sequence models suffer from catastrophic concept drift.
-- **The KubeRevive Solution:** In [metrics_detector.py](file:///c:/MOHIT/capstone/kuberevive/anomaly_detection/metrics_detector.py), we combined statistical moments (Rolling Z-Score / EWMA) with an unsupervised Isolation Forest. This hybrid ensemble runs entirely on commodity CPU cores, consumes $<20$\,MB of memory, and evaluates incoming telemetry in $<50$\,ms without requiring GPU acceleration.
+- **The KubeRevive Solution:** In [metrics_detector.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/anomaly_detection/metrics_detector.py), we combined statistical moments (Rolling Z-Score / EWMA) with an unsupervised Isolation Forest. This hybrid ensemble runs entirely on commodity CPU cores, consumes $<20$\,MB of memory, and evaluates incoming telemetry in $<50$\,ms without requiring GPU acceleration.
 
 ---
 
@@ -81,7 +81,7 @@ To prove that KubeRevive is not evaluated on toy synthetic data, we benchmarked 
 
 ## 5. Citations Added to Paper Bibliography
 
-We added these landmark industrial papers directly into [references.bib](file:///c:/MOHIT/capstone/paper/references.bib):
+We added these landmark industrial papers directly into [references.bib](file:///d:/MOHIT/job-plans/lpu-projects/capstone/paper/references.bib):
 - **Microsoft Gandalf:** *Li et al., "Gandalf: An Intelligent, End-To-End Analytics Service for Safe Deployment in Large-Scale Cloud Infrastructure," USENIX NSDI 2020.*
 - **Microsoft RCACopilot:** *Chen et al., "RCACopilot: An LLM-Based Automated On-Call System for Cloud Incidents," ACM FSE 2024.*
 - **DeepLog:** *Du et al., "DeepLog: Anomaly Detection and Diagnosis from System Logs," ACM CCS 2017.*

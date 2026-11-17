@@ -1,6 +1,6 @@
 # Member 1: Full-Stack Lead (Backend, Core Event Loop & System Architecture)
 
-**Full Name / Placeholder:** Mohit Sharma  
+**Full Name / Placeholder:** Mohit Raj Deo (Reg: 12323329 | Roll: 62)  
 **Technical Track:** Full-Stack Engineering (Backend & Distributed Systems)  
 **Project Role:** System Architect & Core Orchestration Lead  
 
@@ -11,15 +11,15 @@
 You are the backbone of the system. You created the asynchronous orchestration core that connects telemetry ingestion, AI anomaly detection, agent triage, and automated self-healing into a closed loop.
 
 ### Primary Code Files Owned:
-* [kuberevive/dashboard/app.py](file:///c:/MOHIT/capstone/kuberevive/dashboard/app.py): The main FastAPI application orchestrator.
+* [kuberevive/dashboard/app.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/dashboard/app.py): The main FastAPI application orchestrator.
   - Implements the non-blocking background task `run_aiops_cycle()` that ticks every 1.0 second.
   - Exposes RESTful endpoints: `/api/telemetry`, `/api/incidents`, `/api/status`, `/api/chaos/inject`, `/api/chaos/stop`.
   - Implements the real e-commerce transactional checkout endpoint: `/api/checkout/process` with stateful order validation, inventory tracking, and payment simulation.
-* [kuberevive/telemetry/collector.py](file:///c:/MOHIT/capstone/kuberevive/telemetry/collector.py):
+* [kuberevive/telemetry/collector.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/telemetry/collector.py):
   - In-memory circular ring buffer (`collections.deque(maxlen=1000)`) preventing memory leaks during high-throughput ingestion.
   - Gathers CPU, memory, P99 latency, error rate, throughput, and active connection metrics.
-* [config/config.yaml](file:///c:/MOHIT/capstone/config/config.yaml): Centralized configuration schema controlling detection thresholds, timeouts, and actuator policies.
-* [kuberevive/__init__.py](file:///c:/MOHIT/capstone/kuberevive/__init__.py): Root package initialization and inter-module interface definitions.
+* [config/config.yaml](file:///d:/MOHIT/job-plans/lpu-projects/capstone/config/config.yaml): Centralized configuration schema controlling detection thresholds, timeouts, and actuator policies.
+* [kuberevive/__init__.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/__init__.py): Root package initialization and inter-module interface definitions.
 
 ---
 

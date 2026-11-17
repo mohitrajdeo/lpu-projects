@@ -1,6 +1,6 @@
 # Member 4: AI/ML Engineer 2 (GenAI, Dense Vector RAG & Semantic Log NLP)
 
-**Full Name / Placeholder:** Rohan Verma  
+**Full Name:** Akash Choudhary  
 **Technical Track:** Artificial Intelligence & Machine Learning (GenAI, Vector Retrieval & NLP)  
 **Project Role:** GenAI & Root Cause Analysis Lead  
 
@@ -11,17 +11,17 @@
 You built the diagnostic intelligence layer that ingests multi-source error logs, extracts semantic templates, and executes dense Retrieval-Augmented Generation (RAG) over incident postmortems to determine exact root causes without hallucination.
 
 ### Primary Code Files Owned:
-* [kuberevive/agents/rca_agent.py](file:///c:/MOHIT/capstone/kuberevive/agents/rca_agent.py):
+* [kuberevive/agents/rca_agent.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/agents/rca_agent.py):
   - Formulated the **Dense Vector RAG Pipeline** powered by `sentence-transformers` (`all-MiniLM-L6-v2`, 22M parameters, 384-dimensional embeddings).
   - Pre-computes normalized dense embeddings for all historical postmortem incidents at initialization time.
   - Implements cosine similarity retrieval ranking to map real-time symptom vectors to historical postmortems in under 1ms.
   - Features an intelligent, graceful fallback to Jaccard token overlap if dense embedding models are offline.
-* [kuberevive/anomaly_detection/log_anomaly_parser.py](file:///c:/MOHIT/capstone/kuberevive/anomaly_detection/log_anomaly_parser.py):
+* [kuberevive/anomaly_detection/log_anomaly_parser.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/anomaly_detection/log_anomaly_parser.py):
   - Implements semantic regex parameter masking replacing ephemeral variables (IPv4, UUIDs, hex addresses, timestamps) with generalized semantic tokens ($\langle\text{IP}\rangle$, $\langle\text{UUID}\rangle$, $\langle\text{HEX}\rangle$).
   - Isolates critical runtime exception keywords (`OutOfMemoryError`, `NullPointerException`, `DeadlockDetected`, `WorkerTimeout`).
-* [data/incident_knowledge_base.json](file:///c:/MOHIT/capstone/data/incident_knowledge_base.json):
+* [data/incident_knowledge_base.json](file:///d:/MOHIT/job-plans/lpu-projects/capstone/data/incident_knowledge_base.json):
   - Curated a production-grade corpus of **15 structured SRE postmortems** based on real public cloud outages (Shopify heap leaks, Uber event loop lag, GitHub database deadlocks, Cloudflare network partitions, AWS ASG failures).
-* [kuberevive/agents/triage_agent.py](file:///c:/MOHIT/capstone/kuberevive/agents/triage_agent.py) & [kuberevive/agents/patch_generator.py](file:///c:/MOHIT/capstone/kuberevive/agents/patch_generator.py):
+* [kuberevive/agents/triage_agent.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/agents/triage_agent.py) & [kuberevive/agents/patch_generator.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/agents/patch_generator.py):
   - Designed the 15-second sliding debounce window suppressing duplicate alert storms.
   - Generates declarative remediation action contracts with verification bounds.
 

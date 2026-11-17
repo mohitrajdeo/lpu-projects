@@ -98,7 +98,7 @@ Complete 35+ viva questions and model answers are in [team_division/VIVA_DEFENSE
   3. Click **Recompile**. Your camera-ready 2-column IEEE PDF is compiled instantly without local LaTeX installation hassles!
 - **Local MiKTeX Compilation:**
   1. If you prefer offline compilation, install MiKTeX from [miktex.org](https://miktex.org).
-  2. In `c:\MOHIT\capstone\paper`, run:
+  2. In `d:\MOHIT\job-plans\lpu-projects\capstone\paper`, run:
      ```cmd
      pdflatex IEEE_Research_Paper_KubeRevive.tex
      bibtex IEEE_Research_Paper_KubeRevive
@@ -111,7 +111,7 @@ Complete 35+ viva questions and model answers are in [team_division/VIVA_DEFENSE
 ## 🏛️ Repository Architecture & File Tree
 
 ```
-c:\MOHIT\capstone\
+d:\MOHIT\job-plans\lpu-projects\capstone\
 ├── README.md                          <-- Comprehensive documentation and quickstart
 ├── requirements.txt                   <-- Python package dependencies
 ├── Dockerfile                         <-- Multi-stage production container build

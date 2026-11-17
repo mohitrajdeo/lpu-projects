@@ -1,6 +1,6 @@
 # Member 3: AI/ML Engineer 1 (Time-Series Anomaly Detection & Isolation Forest Ensemble)
 
-**Full Name / Placeholder:** Aarav Gupta  
+**Full Name:** Ujjwal Kumar  
 **Technical Track:** Artificial Intelligence & Machine Learning (Time-Series & Unsupervised ML)  
 **Project Role:** Anomaly Detection Lead & Mathematical Modeling Specialist  
 
@@ -11,11 +11,11 @@
 You formulated and implemented the mathematical core of the anomaly detection engine that identifies multi-variate metric failures in streaming cloud telemetry.
 
 ### Primary Code Files Owned:
-* [kuberevive/anomaly_detection/metrics_detector.py](file:///c:/MOHIT/capstone/kuberevive/anomaly_detection/metrics_detector.py):
+* [kuberevive/anomaly_detection/metrics_detector.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/anomaly_detection/metrics_detector.py):
   - Formulated the **Dynamic Rolling Z-Score & EWMA Detector**: maintains sliding windows ($W=30$) dynamically updating mean $\mu_{j,t}$ and sample standard deviation $\sigma_{j,t}$.
   - Engineered the **Multi-Variate Isolation Forest Ensemble**: an unsupervised ensemble of $T=100$ isolation trees (`sklearn.ensemble.IsolationForest`) trained over normalized telemetry vectors (CPU, Memory, P99 Latency, Error Rate, RPS).
   - Formulated the **Hybrid Anomaly Scorer**: combining single-variate statistical bounds with multi-variate isolation tree depths to suppress false alarms during traffic surges.
-* [tests/test_anomaly_detection.py](file:///c:/MOHIT/capstone/tests/test_anomaly_detection.py):
+* [tests/test_anomaly_detection.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/tests/test_anomaly_detection.py):
   - Comprehensive unit test suite verifying mathematical edge cases (e.g., zero-variance divisions, sudden spikes, multi-variate drift).
 
 ---

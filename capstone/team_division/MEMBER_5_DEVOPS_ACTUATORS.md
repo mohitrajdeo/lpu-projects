@@ -1,6 +1,6 @@
 # Member 5: DevOps Engineer 1 (Infrastructure Automation, Safety Guardrails & Containerization)
 
-**Full Name / Placeholder:** Priya Patel  
+**Full Name:** Saif Siddique  
 **Technical Track:** DevOps & Site Reliability Engineering (Cloud Infrastructure & SRE)  
 **Project Role:** Autonomous Remediation Lead & Cloud Observability Engineer  
 
@@ -11,18 +11,18 @@
 You engineered the actuation bridge that translates diagnostic AI recommendations into real, deterministic, zero-downtime infrastructure operations in cloud environments.
 
 ### Primary Code Files Owned:
-* [kuberevive/actuators/remediation_engine.py](file:///c:/MOHIT/capstone/kuberevive/actuators/remediation_engine.py):
+* [kuberevive/actuators/remediation_engine.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/actuators/remediation_engine.py):
   - Engineered the 4 primary autonomous actuators:
     1. `restart_service`: Zero-downtime rolling container process recycling.
     2. `rollback_deployment`: Atomic git/container rollback to the last verified stable release commit.
     3. `scale_replicas`: Horizontal Pod Autoscaling (HPA) replica adjustment.
     4. `circuit_breaker_trip`: Load-shedding traffic governor returning fast HTTP 503s with `Retry-After` headers.
   - Formulated the **Stateful 15-Second Cooldown Barrier**: enforces a strict per-service execution lock to eliminate actuator flapping and thundering herd collapse.
-* [kuberevive/actuators/verification_sandbox.py](file:///c:/MOHIT/capstone/kuberevive/actuators/verification_sandbox.py):
+* [kuberevive/actuators/verification_sandbox.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/actuators/verification_sandbox.py):
   - Post-remediation canary health probe verifier: interrogates the service for 5-10 seconds to confirm memory, latency, and HTTP 200 error rates have stabilized below target SLAs before closing incident tickets.
-* [kuberevive/telemetry/prometheus_exporter.py](file:///c:/MOHIT/capstone/kuberevive/telemetry/prometheus_exporter.py):
+* [kuberevive/telemetry/prometheus_exporter.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/telemetry/prometheus_exporter.py):
   - Prometheus client exporting OpenMetrics-compliant gauges and counters (`kuberevive_cpu_usage`, `kuberevive_memory_usage`, `kuberevive_remediations_total`).
-* [Dockerfile](file:///c:/MOHIT/capstone/Dockerfile) & [docker-compose.yml](file:///c:/MOHIT/capstone/docker-compose.yml):
+* [Dockerfile](file:///d:/MOHIT/job-plans/lpu-projects/capstone/Dockerfile) & [docker-compose.yml](file:///d:/MOHIT/job-plans/lpu-projects/capstone/docker-compose.yml):
   - Multi-stage Alpine containerization and service networking linking KubeRevive, the microservice, and Prometheus monitoring.
 
 ---

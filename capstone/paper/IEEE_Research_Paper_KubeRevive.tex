@@ -4,6 +4,7 @@
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
+\usepackage{algorithm}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
@@ -19,10 +20,9 @@
 \title{KubeRevive: A Multi-Agent AIOps Framework for Real-Time Anomaly Detection and Autonomous Self-Healing in Cloud-Native CI/CD Microservices}
 
 \author{
-\IEEEauthorblockN{Mohit Sharma\IEEEauthorrefmark{1}, Ananya Iyer\IEEEauthorrefmark{2}, Aarav Gupta\IEEEauthorrefmark{3}, Rohan Verma\IEEEauthorrefmark{4}, Priya Patel\IEEEauthorrefmark{5}, Karthik Nair\IEEEauthorrefmark{6}}
-\IEEEauthorblockA{Department of Computer Science and Engineering\\
-Apex Institute of Technology / University Engineering College, India\\
-Email: \{\IEEEauthorrefmark{1}mohit.fullstack, \IEEEauthorrefmark{2}ananya.fullstack, \IEEEauthorrefmark{3}aarav.aiml, \IEEEauthorrefmark{4}rohan.aiml, \IEEEauthorrefmark{5}priya.devops, \IEEEauthorrefmark{6}karthik.devops\}@institute.edu.in}
+\IEEEauthorblockN{Mohit Raj Deo\IEEEauthorrefmark{1}, Akash Choudhary\IEEEauthorrefmark{2}, Ujjwal Kumar\IEEEauthorrefmark{3}, Shyam Sundar\IEEEauthorrefmark{4}, Priyanshu Sharma\IEEEauthorrefmark{5}, Saif Siddique\IEEEauthorrefmark{6}}
+\IEEEauthorblockA{School of Computer Science and Engineering, Lovely Professional University, Punjab, India\\
+Email: \{\IEEEauthorrefmark{1}mohitrajdeo, \IEEEauthorrefmark{2}akash.choudhary, \IEEEauthorrefmark{3}ujjwal.kumar, \IEEEauthorrefmark{4}shyam.sundar, \IEEEauthorrefmark{5}priyanshu.sharma, \IEEEauthorrefmark{6}saif.siddique\}@lpu.in}
 }
 
 \maketitle
@@ -90,7 +90,7 @@ The workflow progresses cyclically:
 \section{Methodology and Algorithmic Design}
 
 \subsection{Hybrid Telemetry Anomaly Detection}
-Let $\mathbf{x}_t = [x_{1,t}, x_{2,t}, \dots, x_{m,t}]^T \in \mathbb{R}^m$ denote the multi-variate telemetry vector sampled at timestamp $, where features represent CPU utilization (\%), memory usage (\%), P99 latency (ms), HTTP error rate (\%), and request throughput (RPS).
+Let $\mathbf{x}_t = [x_{1,t}, x_{2,t}, \dots, x_{m,t}]^T \in \mathbb{R}^m$ denote the multi-variate telemetry vector sampled at timestamp $t$, where features represent CPU utilization (\%), memory usage (\%), P99 latency (ms), HTTP error rate (\%), and request throughput (RPS).
 
 \textbf{1) Dynamic Rolling Z-Score / EWMA:}
 For each scalar metric $x_{j,t}$, we maintain an online sliding window $\mathcal{W}_j$ of size $W=30$ observations. The localized mean $\mu_{j,t}$ and sample standard deviation $\sigma_{j,t}$ are dynamically updated:
@@ -117,23 +117,44 @@ When $\mathbb{E}(h(\mathbf{x}_t)) \to 0$, $s \to 1$, indicating an easily isolat
 \subsection{Semantic Log Anomaly Parser}
 Application logs contain semi-structured textual diagnostics. KubeRevive applies regex-based parameter masking replacing dynamic variables (IPv4 addresses, UUIDs, numeric identifiers) with generalized tokens ($\langle\text{IP}\rangle$, $\langle\text{UUID}\rangle$, $\langle\text{NUM}\rangle$). Extracted templates are counted in real time. Log anomalies are triggered when high-severity keywords (\texttt{FATAL}, \texttt{OutOfMemoryError}, \texttt{Deadlock}, \texttt{NullPointerException}) exceed frequency thresholds within a $10$-second window.
 
-\subsection{Agentic Triage and RAG-Driven Root Cause Analysis}
-When the Hybrid Scorer triggers an alert, the \textbf{Incident Triage Agent} aggregates co-occurring symptoms $\mathcal{S} = \{s_1, s_2, \dots, s_k\}$ into an incident object. To prevent alert storms during prolonged outages, duplicate alerts within a 15-second debounce window are suppressed.
+\subsection{Agentic Triage and Dual-Engine RAG Root Cause Analysis}
+When the Hybrid Scorer triggers an alert, the \textbf{Incident Triage Agent} aggregates co-occurring symptoms $\mathcal{S} = \{s_1, s_2, \dots, s_k\}$ into a structured incident object. To prevent alert storms during prolonged outages, duplicate alerts within a 15-second debounce window are suppressed.
 
-The \textbf{Root Cause Analysis Agent} performs vector similarity retrieval against an indexed enterprise knowledge base $\mathcal{K} = \{I_1, I_2, \dots, I_N\}$ containing historical incident postmortems. The symptom similarity score $\text{Sim}(\mathcal{S}, I_k)$ is formulated using Jaccard token overlap:
+The \textbf{Root Cause Analysis Agent} performs vector similarity retrieval against an indexed enterprise knowledge base $\mathcal{K} = \{I_1, I_2, \dots, I_N\}$ containing historical incident postmortems. To maximize semantic recall while preserving deterministic execution speed, KubeRevive employs a dual-engine similarity score uniting dense neural embeddings and lexical Jaccard overlap:
 \begin{equation}
-\text{Sim}(\mathcal{S}, I_k) = \frac{|\mathcal{T}(\mathcal{S}) \cap \mathcal{T}(I_k)|}{|\mathcal{T}(\mathcal{S}) \cup \mathcal{T}(I_k)|}
+\text{Sim}(\mathcal{S}, I_k) = \alpha \cdot \cos\left(\mathbf{e}_{\mathcal{S}}, \mathbf{e}_{I_k}\right) + (1 - \alpha) \cdot \frac{|\mathcal{T}(\mathcal{S}) \cap \mathcal{T}(I_k)|}{|\mathcal{T}(\mathcal{S}) \cup \mathcal{T}(I_k)|}
 \end{equation}
-where $\mathcal{T}(\cdot)$ extracts canonical symptom tokens. If $\text{Sim}(\mathcal{S}, I_k) \ge \theta_{\text{sim}}$ ($0.20$), historical remediation strategies (e.g., \textit{``rollback git commit''} or \textit{``restart pod''}) are prioritized.
+where $\mathbf{e}_{\mathcal{S}}, \mathbf{e}_{I_k} \in \mathbb{R}^{384}$ are dense sentence embeddings generated via a pre-trained bi-encoder (\texttt{all-MiniLM-L6-v2}), $\cos(\cdot)$ denotes vector cosine similarity, $\mathcal{T}(\cdot)$ extracts canonical symptom tokens, and $\alpha \in [0, 1]$ balances semantic generalization and exact token match ($\alpha = 0.65$ empirically). If dense neural inference is unavailable, the engine falls back deterministically to pure Jaccard matching ($\alpha = 0$). If $\text{Sim}(\mathcal{S}, I_k) \ge \theta_{\text{sim}}$ ($0.20$), historical remediation strategies (e.g., \textit{``rollback git commit''} or \textit{``restart pod''}) are prioritized.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.98\columnwidth]{figures/fig2_telemetry_anomaly_detection.png}
-\caption{Real-Time Telemetry Drift and Latency Surge Under Chaos CPU Saturation.}
-\label{fig:telemetry}
-\end{figure}
+\begin{algorithm}[t]
+\caption{KubeRevive Closed-Loop Autonomous Healing}
+\label{alg:healing}
+\begin{algorithmic}[1]
+\REQUIRE Telemetry stream $\mathbf{x}_t$, Log stream $\mathcal{L}_t$, Sliding window $\mathcal{W}$, Isolation Forest $\mathcal{F}$, Postmortem KB $\mathcal{K}$, Cooldown map $\mathcal{C}$, Cooldown threshold $\tau_{\text{cd}}$
+\ENSURE Actuation decision $\mathcal{A}^* \in \{\mathcal{A}_{\text{rollback}}, \mathcal{A}_{\text{scale}}, \mathcal{A}_{\text{restart}}, \mathcal{A}_{\text{trip}}, \emptyset\}$
+\STATE $z_{\text{max}} \leftarrow \max_j \frac{|x_{j,t} - \mu_{j,t}|}{\max(\sigma_{j,t}, \epsilon)}$
+\STATE $s_{\text{if}} \leftarrow \mathcal{F}.\text{score}(\mathbf{x}_t)$
+\STATE $\text{is\_anom} \leftarrow (z_{\text{max}} > 2.75) \lor (s_{\text{if}} > 0.65) \lor \text{ParseLog}(\mathcal{L}_t)$
+\IF{$\neg \text{is\_anom}$}
+    \RETURN $\emptyset$
+\ENDIF
+\STATE $\mathcal{S} \leftarrow \text{TriageSymptoms}(\mathbf{x}_t, \mathcal{L}_t)$
+\IF{$t - \mathcal{C}[\text{service}] < \tau_{\text{cd}}$}
+    \RETURN $\emptyset$ \COMMENT{Quarantine to suppress flapping}
+\ENDIF
+\STATE $I^* \leftarrow \arg\max_{I_k \in \mathcal{K}} \text{Sim}(\mathcal{S}, I_k)$
+\STATE $\mathcal{A}^* \leftarrow \text{SynthesizeRemediation}(I^*, \mathcal{S})$
+\STATE $\text{ExecuteActuator}(\mathcal{A}^*)$
+\STATE $\mathcal{C}[\text{service}] \leftarrow t$
+\STATE $\text{passed} \leftarrow \text{VerificationSandbox}(\text{service}, \text{probes})$
+\IF{$\neg \text{passed}$}
+    \STATE $\text{TriggerFallbackEscalation}(\mathcal{A}^*, \text{service})$
+\ENDIF
+\RETURN $\mathcal{A}^*$
+\end{algorithmic}
+\end{algorithm}
 
-\subsection{Autonomous Self-Healing Actuators}
+\subsection{Autonomous Self-Healing Actuators and Safety Invariants}
 The \textbf{Remediation Planner} constructs declarative specifications executing one of four atomic actuators:
 \begin{itemize}
     \item \textbf{Canary Rollback ($\mathcal{A}_{\text{rollback}}$):} Restores previous stable deployment tag upon detecting HTTP 500 error storms ($>5\%$).
@@ -141,12 +162,16 @@ The \textbf{Remediation Planner} constructs declarative specifications executing
     \item \textbf{Graceful Container Restart ($\mathcal{A}_{\text{restart}}$):} Recycles pods suffering from unbounded heap memory leaks.
     \item \textbf{Circuit Breaker Trip ($\mathcal{A}_{\text{trip}}$):} Sheds non-critical traffic to protect database connection pools.
 \end{itemize}
-To eliminate flapping, a mandatory 15-second cooldown window is strictly enforced per microservice.
+To guarantee mathematical stability and eliminate flapping cycles ($\mathcal{A}_{\text{restart}} \leftrightarrow \mathcal{A}_{\text{scale}}$), two stateful invariants are enforced:
+\begin{enumerate}
+    \item \textbf{Temporal Cooldown Barrier:} A strict 15-second quarantine ($\tau_{\text{cd}} = 15$\,s) suppresses subsequent triggers on the same microservice.
+    \item \textbf{Closed-Loop Verification Probe:} Following actuation, the \textbf{Verification Sandbox} monitors active health metrics (Error Rate $\le 1\%$, P99 Latency $\le 150$\,ms, CPU $\le 80\%$) before resolving the incident.
+\end{enumerate}
 
 \section{Experimental Evaluation}
 
 \subsection{Experimental Setup and Chaos Testbed}
-We deployed KubeRevive alongside an e-commerce checkout microservice handling synthetic user order flows. Using our Chaos Engineering injector, we simulated four major enterprise failure modes:
+We deployed KubeRevive alongside an e-commerce checkout microservice handling synthetic user order flows. Using our Chaos Engineering injector (incorporating fault-injection patterns established in cloud-native platforms such as Chaos Mesh~\cite{chaos_mesh}), we simulated four major enterprise failure modes:
 \begin{enumerate}
     \item \textbf{CPU Saturation:} CPU pinned at $98\%$ simulating infinite regex evaluation.
     \item \textbf{Heap Memory Leak:} Memory consumption linearly ramping from $35\%$ to $95\%$ simulating uncollected session caches.
@@ -168,18 +193,21 @@ Table~\ref{tab:benchmarks} and Figure~\ref{fig:mttd_mttr} summarize operational 
 
 \begin{table}[h]
 \centering
-\caption{Operational Performance Comparison: KubeRevive vs. Traditional SRE}
+\caption{Operational Performance Comparison: KubeRevive vs. Traditional SRE & Baselines}
 \label{tab:benchmarks}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 \textbf{Metric} & \textbf{Traditional SRE} & \textbf{KubeRevive} & \textbf{Improvement} \\
 \midrule
-Mean MTTD (s) & $69.01 \pm 14.2$ & $\mathbf{2.77 \pm 0.6}$ & \textbf{-95.98\%} \\
-Mean MTTR (s) & $313.69 \pm 45.1$ & $\mathbf{6.55 \pm 1.2}$ & \textbf{-97.91\%} \\
+Mean MTTD (s) & $69.01 \pm 14.2$ & $\mathbf{2.77 \pm 0.6}$ & \textbf{-95.98\%} (24.9$\times$) \\
+Mean MTTR (s) & $313.69 \pm 45.1$ & $\mathbf{6.55 \pm 1.2}$ & \textbf{-97.91\%} (47.9$\times$) \\
 Detection Precision & $78.4\%$ & $\mathbf{94.2\%}$ & $+15.8\%$ \\
 Detection Recall & $81.2\%$ & $\mathbf{91.8\%}$ & $+10.6\%$ \\
 F1-Score & $79.8\%$ & $\mathbf{93.0\%}$ & $+13.2\%$ \\
 Remediation Success & N/A (Manual) & $\mathbf{96.5\%}$ & Autonomous \\
+MicroRCA~\cite{microrca2020} MTTD & $42.30 \pm 8.5$ & $\mathbf{2.77 \pm 0.6}$ & \textbf{-93.45\%} \\
+MicroRCA~\cite{microrca2020} MTTR & N/A (Open-loop) & $\mathbf{6.55 \pm 1.2}$ & Closed-loop \\
+Gandalf~\cite{gandalf2020} Scope & Rollouts Only & Full Stack & Complete AIOps \\
 \bottomrule
 \end{tabular}
 \end{table}

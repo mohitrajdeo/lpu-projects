@@ -1,6 +1,6 @@
 # Member 6: DevOps Engineer 2 (Chaos Engineering, Real Hardware Benchmarking & Research Lead)
 
-**Full Name / Placeholder:** Karthik Nair  
+**Full Name:** Shyam Sundar  
 **Technical Track:** DevOps & Site Reliability Engineering (Chaos Engineering & Empirical Evaluation)  
 **Project Role:** Chaos Engineering Lead, Quantitative Evaluation & Research Paper Author  
 
@@ -11,21 +11,21 @@
 You engineered the Chaos Engineering fault injection framework, the physical operating system stress tester, and the empirical benchmarking pipeline that scientifically proves KubeRevive's performance.
 
 ### Primary Code Files Owned:
-* [kuberevive/simulation/chaos_injector.py](file:///c:/MOHIT/capstone/kuberevive/simulation/chaos_injector.py):
+* [kuberevive/simulation/chaos_injector.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/simulation/chaos_injector.py):
   - Systematic chaos injection engine supporting 4 production incident archetypes:
     1. `memory_leak`: Incremental byte array allocation simulating uncollected cache leaks.
     2. `cpu_spike`: High-frequency trigonometric floating-point loops pinning CPU cores to 100%.
     3. `latency_regression`: Configurable sleep injections in request paths simulating upstream RPC timeouts.
     4. `http_500_spike`: Synthetic unhandled runtime exceptions in payment checkout flows.
-* [kuberevive/simulation/physical_stressor.py](file:///c:/MOHIT/capstone/kuberevive/simulation/physical_stressor.py) & [benchmark/live_stress_tester.py](file:///c:/MOHIT/capstone/benchmark/live_stress_tester.py):
+* [kuberevive/simulation/physical_stressor.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/simulation/physical_stressor.py) & [benchmark/live_stress_tester.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/benchmark/live_stress_tester.py):
   - **Real Physical Hardware Stressor:** Uses Python's native `psutil` library to allocate physical RAM buffers (55+ MB) and trigger real multi-threaded OS CPU spikes, followed by physical process reclamation. **(Not mocked, 100% real hardware testing).**
-* [benchmark/run_benchmark.py](file:///c:/MOHIT/capstone/benchmark/run_benchmark.py):
+* [benchmark/run_benchmark.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/benchmark/run_benchmark.py):
   - 40-trial comparative evaluation pipeline computing MTTD, MTTR, Precision, Recall, and F1 across baseline vs. KubeRevive.
-* [benchmark/run_real_world_benchmark.py](file:///c:/MOHIT/capstone/benchmark/run_real_world_benchmark.py):
+* [benchmark/run_real_world_benchmark.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/benchmark/run_real_world_benchmark.py):
   - Real-world evaluation against **22,082 data points** from the official **Numenta Anomaly Benchmark (NAB)** AWS CloudWatch outage dataset and Loghub Apache production logs.
-* [benchmark/generate_charts.py](file:///c:/MOHIT/capstone/benchmark/generate_charts.py):
-  - Generated the 4 publication-quality 300-DPI figures in [paper/figures/](file:///c:/MOHIT/capstone/paper/figures/).
-* [.github/workflows/ci.yml](file:///c:/MOHIT/capstone/.github/workflows/ci.yml): Automated GitHub Actions CI/CD pipeline executing 13/13 unit tests on every commit.
+* [benchmark/generate_charts.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/benchmark/generate_charts.py):
+  - Generated the 4 publication-quality 300-DPI figures in [paper/figures/](file:///d:/MOHIT/job-plans/lpu-projects/capstone/paper/figures/).
+* [.github/workflows/ci.yml](file:///d:/MOHIT/job-plans/lpu-projects/capstone/.github/workflows/ci.yml): Automated GitHub Actions CI/CD pipeline executing 13/13 unit tests on every commit.
 
 ---
 
@@ -74,7 +74,7 @@ You engineered the Chaos Engineering fault injection framework, the physical ope
 #### Q1: "Are your benchmark results simulated, or did you run real physical stress tests?"
 **Answer:**  
 *"We validated KubeRevive through two rigorous layers:  
-1. **Physical Hardware Validation:** In [benchmark/live_stress_tester.py](file:///c:/MOHIT/capstone/benchmark/live_stress_tester.py), we stress the host system by allocating physical byte arrays in RAM and running CPU-intensive mathematical loops across OS worker threads. We read actual OS telemetry via `psutil.virtual_memory()` and `psutil.cpu_percent()`. When the actuator restarts the process, 55+ MB of real physical RAM is immediately released back to the operating system in 3.0 seconds.  
+1. **Physical Hardware Validation:** In [benchmark/live_stress_tester.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/benchmark/live_stress_tester.py), we stress the host system by allocating physical byte arrays in RAM and running CPU-intensive mathematical loops across OS worker threads. We read actual OS telemetry via `psutil.virtual_memory()` and `psutil.cpu_percent()`. When the actuator restarts the process, 55+ MB of real physical RAM is immediately released back to the operating system in 3.0 seconds.  
 2. **Real Industry Outages:** We validated detection on 22,082 real production telemetry points from the official Numenta Anomaly Benchmark (AWS AutoScaling and EC2 latency failures) and Loghub Apache logs."*
 
 #### Q2: "Why did you run 40 chaos trials? Is 40 statistically significant?"

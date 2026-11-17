@@ -1,6 +1,6 @@
 # Member 2: Full-Stack Engineer (Frontend UI, Real-Time Observability & Operator Gateway)
 
-**Full Name / Placeholder:** Ananya Iyer  
+**Full Name:** Priyanshu Sharma  
 **Technical Track:** Full-Stack Engineering (Frontend, UI/UX & Observability Gateway)  
 **Project Role:** Observability UI Lead & Client-State Architect  
 
@@ -11,17 +11,17 @@
 You built the user-facing operational command center and real-time observability interface that SRE engineers and evaluators interact with.
 
 ### Primary Code Files Owned:
-* [kuberevive/dashboard/static/index.html](file:///c:/MOHIT/capstone/kuberevive/dashboard/static/index.html):
+* [kuberevive/dashboard/static/index.html](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/dashboard/static/index.html):
   - High-performance, single-page application (SPA) operational dashboard.
   - Features real-time metric cards (CPU, Memory, P99 Latency, Error Rate, Pod Replicas, Active Incidents).
   - Contains the Chaos Engineering injection console allowing on-demand fault triggers (Memory Leak, CPU Spike, Latency Regression, 500 Spike).
   - Displays the live incident timeline and automated remediation activity feed with status badges (ANALYZING, REMEDIATING, RESOLVED).
-* [kuberevive/dashboard/static/app.js](file:///c:/MOHIT/capstone/kuberevive/dashboard/static/app.js):
+* [kuberevive/dashboard/static/app.js](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/dashboard/static/app.js):
   - Client-side event poller and state synchronizer running every 1,000ms via `fetch()`.
   - Implements dynamic DOM updates without flickering or page reloads.
   - Handles chaos fault injection API requests and visualizes actuator state transitions.
   - Manages real-time alert toast notifications and color-coded SLA threshold warnings.
-* Integration with [kuberevive/dashboard/app.py](file:///c:/MOHIT/capstone/kuberevive/dashboard/app.py): Formatted telemetry and incident JSON payloads for smooth client-side consumption.
+* Integration with [kuberevive/dashboard/app.py](file:///d:/MOHIT/job-plans/lpu-projects/capstone/kuberevive/dashboard/app.py): Formatted telemetry and incident JSON payloads for smooth client-side consumption.
 
 ---
 
