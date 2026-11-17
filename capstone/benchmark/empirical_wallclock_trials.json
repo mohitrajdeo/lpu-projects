@@ -1,0 +1,379 @@
+{
+  "total_trials": 40,
+  "successful_remediations": 39,
+  "success_rate_pct": 97.5,
+  "mttd_seconds": {
+    "mean": 0.104,
+    "std": 0.348,
+    "min": 0.019,
+    "max": 2.211
+  },
+  "actuator_mttr_ms": {
+    "mean": 0.041,
+    "std": 0.006,
+    "min": 0.032,
+    "max": 0.058
+  },
+  "raw_trials": [
+    {
+      "scenario": "cpu_spike",
+      "trial": 0,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0649,
+      "mttr_sec": 5.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 1,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.022,
+      "mttr_sec": 5.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 2,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0218,
+      "mttr_sec": 4.6e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 3,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0215,
+      "mttr_sec": 5.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 4,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0198,
+      "mttr_sec": 4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 5,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0198,
+      "mttr_sec": 4.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 6,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0631,
+      "mttr_sec": 3.9e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 7,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0609,
+      "mttr_sec": 3.9e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 8,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0643,
+      "mttr_sec": 4.8e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "cpu_spike",
+      "trial": 9,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0651,
+      "mttr_sec": 3.9e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 0,
+      "detected": true,
+      "ticks_to_detect": 4,
+      "mttd_sec": 0.1467,
+      "mttr_sec": 4.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 1,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0203,
+      "mttr_sec": 4.3e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 2,
+      "detected": true,
+      "ticks_to_detect": 3,
+      "mttd_sec": 0.1108,
+      "mttr_sec": 3.7e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 3,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.02,
+      "mttr_sec": 3.5e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 4,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0202,
+      "mttr_sec": 4.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 5,
+      "detected": true,
+      "ticks_to_detect": 13,
+      "mttd_sec": 0.5461,
+      "mttr_sec": 4.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 6,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0213,
+      "mttr_sec": 4.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 7,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0202,
+      "mttr_sec": 3.8e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 8,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0242,
+      "mttr_sec": 4.3e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "memory_leak",
+      "trial": 9,
+      "detected": true,
+      "ticks_to_detect": 4,
+      "mttd_sec": 0.1476,
+      "mttr_sec": 3.8e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 0,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0207,
+      "mttr_sec": 4.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 1,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0201,
+      "mttr_sec": 4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 2,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0203,
+      "mttr_sec": 4.6e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 3,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.02,
+      "mttr_sec": 4.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 4,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0202,
+      "mttr_sec": 3.7e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 5,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0222,
+      "mttr_sec": 4.1e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 6,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0219,
+      "mttr_sec": 4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 7,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0204,
+      "mttr_sec": 3.8e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 8,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0215,
+      "mttr_sec": 4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "http_500_storm",
+      "trial": 9,
+      "detected": true,
+      "ticks_to_detect": 2,
+      "mttd_sec": 0.0615,
+      "mttr_sec": 3.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 0,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0191,
+      "mttr_sec": 3.7e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 1,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0199,
+      "mttr_sec": 3.6e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 2,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0203,
+      "mttr_sec": 3.3e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 3,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0214,
+      "mttr_sec": 3.4e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 4,
+      "detected": false,
+      "ticks_to_detect": 50,
+      "mttd_sec": 2.2105,
+      "mttr_sec": 5.8e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 5,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0199,
+      "mttr_sec": 3.7e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 6,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0206,
+      "mttr_sec": 3.2e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 7,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.02,
+      "mttr_sec": 3.2e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 8,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0194,
+      "mttr_sec": 3.3e-05,
+      "status": "SUCCESS"
+    },
+    {
+      "scenario": "latency_burst",
+      "trial": 9,
+      "detected": true,
+      "ticks_to_detect": 1,
+      "mttd_sec": 0.0197,
+      "mttr_sec": 3.5e-05,
+      "status": "SUCCESS"
+    }
+  ]
+}
