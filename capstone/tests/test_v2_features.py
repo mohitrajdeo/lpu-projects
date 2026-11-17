@@ -98,3 +98,4 @@ def test_speculative_sandbox_execution():
     res = sandbox.execute_speculative_verification(test_script, timeout_sec=2.0)
     assert res["success"] is True
     assert "SUCCESS" in res["stdout"]
+

@@ -150,3 +150,4 @@ class TemporalAnomalyEngine:
             "feature_attribution": feature_attribution,
             "latent_vector_sample": [round(float(v), 3) for v in latent.squeeze(0).mean(dim=1).tolist()]
         }
+
